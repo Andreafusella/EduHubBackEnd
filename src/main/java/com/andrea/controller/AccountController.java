@@ -19,8 +19,12 @@ public class AccountController {
     public void registerRoutes(Javalin app) {
         app.post("/register", this::register);
         app.get("/get-account-with-email", this::getAccountWithEmail);
+        app.delete("/delete", this::deleteAccount);
     }
 
+    private EmailService emailService = new EmailService();
+
+    //registrazione utente
     public void register(Context ctx) {
         try {
             System.out.println("New Account");
@@ -40,12 +44,7 @@ public class AccountController {
                 ctx.status(400).json("Invalid request");
             } else {
                 try {
-                    EmailService emailService = new EmailService("andrearisparmi15@gmail.com", "qkum fufq gaxi jvky");
-                    emailService.sendEmail(
-                            account.getEmail(),
-                            "Welcome to Our Service",
-                            "Your account is now ready for start!"
-                    );
+                    emailService.generateAndSendEmail(account.getEmail(), "Welcome to Our Service", "Your account is now ready for start!", "try");
                     ctx.status(201).json(newAccount);
                 } catch (Exception e) {
                     System.err.println("Failed to send email: " + e.getMessage());
@@ -56,6 +55,35 @@ public class AccountController {
             ctx.status(409).json("Email already Exist!");
         } catch (ValidationException e) {
             ctx.status(400).json(e.getMessage());
+        }
+    }
+
+    //delete account
+    public void deleteAccount(Context ctx) {
+        try {
+            System.out.println("Delete account");
+
+            int id_account = 0;
+
+            try {
+                id_account = Integer.parseInt(ctx.queryParam("id_account"));
+            } catch (Exception e) {
+                ctx.status(400).json("Invalid input data: " + e.getMessage());
+            }
+
+            String email = accountService.removeAccount(id_account);
+
+            if (email != null) {
+                try {
+                    emailService.generateAndSendEmail(email, "Elimination Complete", "Your account was successfully deleted!", "try");
+                    ctx.status(201).json("Account delete");
+                } catch (Exception e) {
+                    System.err.println("Failed to send email: " + e.getMessage());
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 

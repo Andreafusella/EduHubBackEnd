@@ -45,7 +45,6 @@ public class AccountDao {
                 try (ResultSet generatedKeys = newAccount.getGeneratedKeys()){
                     if (generatedKeys.next()) {
                         generateId = generatedKeys.getInt(1);
-                        System.out.println(generateId);
                     }
                 }
             } else {
@@ -110,7 +109,35 @@ public class AccountDao {
         }
     }
 
-    public void removeAccount(int id_account) {
-        
+    public String removeAccount(int id_account) {
+        String remove = "DELETE FROM account WHERE id_account = ?";
+        String checkEmail = "SELECT email FROM credential WHERE id_account = ?";
+
+        try {
+            PreparedStatement emailStm = connection.prepareStatement(checkEmail);
+            emailStm.setInt(1, id_account);
+
+            ResultSet rs = emailStm.executeQuery();
+            String email = "";
+            if (rs.next()) {
+                email = rs.getString("email");
+            } else {
+                return null;
+            }
+
+            PreparedStatement deleteAccount = connection.prepareStatement(remove);
+            deleteAccount.setInt(1, id_account);
+
+            int affectedRows = deleteAccount.executeUpdate();
+
+            if (affectedRows > 0) {
+                return email;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

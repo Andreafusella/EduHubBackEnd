@@ -11,17 +11,12 @@ import lombok.Setter;
 @Setter
 
 public class EmailService {
-    private String from;
-    private String host;
-    private String password;
+    private String from = "andrearisparmi15@gmail.com";
+    private String host = "smtp.gmail.com";
+    private String password = "qkum fufq gaxi jvky";
 
-    public EmailService(String from, String password) {
-        this.from = from;
-        this.host = "smtp.gmail.com";
-        this.password = password;
-    }
 
-    public void sendEmail(String to, String subject, String body) {
+    private void sendEmail(String to, String subject, String body, String content) {
         Properties properties = System.getProperties();
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", "587");
@@ -50,5 +45,9 @@ public class EmailService {
             e.printStackTrace();
             throw new RuntimeException("Failed to send email: " + e.getMessage());
         }
+    }
+
+    public void generateAndSendEmail(String to, String subject, String body, String content) {
+        sendEmail(to, subject, body, content);
     }
 }

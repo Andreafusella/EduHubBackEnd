@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8aaff1b4-6206-48fb-af4c-ffe5f8a5c000" name="Changes" comment="Create -&gt; fix validation Login date from Front-end" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Andreafusella&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Andreafusella/EduHubBackEnd.git&quot;,
+    &quot;accountId&quot;: &quot;f59c62b4-0aaf-4e56-9614-7529ddc50a79&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2qOeOtEshnOgdpQJWQYrgkyjxsU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/andreafusella/Desktop/Desktop/Progetti/EduHubBackEnd/EduHubBackEnd/src/main/java/com/andrea/Main.java&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8aaff1b4-6206-48fb-af4c-ffe5f8a5c000" name="Changes" comment="" />
+      <created>1734538020897</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734538020897</updated>
+    </task>
+    <task id="LOCAL-00001" summary="First Commit">
+      <option name="closed" value="true" />
+      <created>1734538077551</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1734538077551</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Create -&gt; project back-end init">
+      <option name="closed" value="true" />
+      <created>1734539058134</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1734539058134</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Create -&gt; account dao/model credential, databaseConnection">
+      <option name="closed" value="true" />
+      <created>1734555342838</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734555342838</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Create -&gt; register account + validation">
+      <option name="closed" value="true" />
+      <created>1734557167949</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1734557167949</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Create -&gt; login with token, getAllUserWithEmail">
+      <option name="closed" value="true" />
+      <created>1734561357228</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1734561357228</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Create -&gt; fix validation Login date from Front-end">
+      <option name="closed" value="true" />
+      <created>1734561739322</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1734561739322</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Create -&gt; fix validation Login date from Front-end">
+      <option name="closed" value="true" />
+      <created>1734561983084</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734561983084</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First Commit" />
+    <MESSAGE value="Create -&gt; project back-end init" />
+    <MESSAGE value="Create -&gt; account dao/model credential, databaseConnection" />
+    <MESSAGE value="Create -&gt; register account + validation" />
+    <MESSAGE value="Create -&gt; login with token, getAllUserWithEmail" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;EduHubBackEnd/src/main/java/com/andrea/auth/controller/AuthController.java&#10;#&#9;EduHubBackEnd/src/main/java/com/andrea/validator/LoginValidator.java" />
+    <MESSAGE value="Create -&gt; fix validation Login date from Front-end" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create -&gt; fix validation Login date from Front-end" />
+  </component>
+</project>
