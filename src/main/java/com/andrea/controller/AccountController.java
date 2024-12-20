@@ -15,6 +15,7 @@ import java.util.List;
 
 public class AccountController {
     private AccountService accountService = new AccountService();
+    private EmailService emailService = new EmailService();
 
     public void registerRoutes(Javalin app) {
         app.post("/register", this::register);
@@ -22,7 +23,6 @@ public class AccountController {
         app.delete("/delete", this::deleteAccount);
     }
 
-    private EmailService emailService = new EmailService();
 
     //registrazione utente
     public void register(Context ctx) {

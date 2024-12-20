@@ -1,0 +1,14 @@
+package com.andrea.service;
+
+import com.andrea.controller.CourseController;
+import com.andrea.dao.CourseDao;
+import com.andrea.dto.NewCourseDto;
+import com.andrea.model.Course;
+
+public class CourseSerivce {
+    private CourseDao courseDao = new CourseDao();
+
+    public Course addCourse(NewCourseDto courseDto) {
+        return courseDao.addCourse(courseDto);
+    }
+}

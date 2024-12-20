@@ -48,7 +48,7 @@ public class AccountDao {
                     }
                 }
             } else {
-                throw new SQLException("Creazione account fallita, nessuna riga aggiunta.");
+                throw new SQLException("Account creation failed, no rows added");
             }
 
             PreparedStatement newCredential = connection.prepareStatement(addCredential);
