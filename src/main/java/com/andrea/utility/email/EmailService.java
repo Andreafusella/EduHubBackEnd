@@ -11,9 +11,9 @@ import lombok.Setter;
 @Setter
 
 public class EmailService {
-    private String from = "andrearisparmi15@gmail.com";
+    private String from = "andrea55fusella@gmail.com";
     private String host = "smtp.gmail.com";
-    private String password = "qkum fufq gaxi jvky";
+    private String password = "wyke jxnd pfbf fogc";
 
 
     private void sendEmail(String to, String subject, String body, String content) {

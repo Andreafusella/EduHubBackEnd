@@ -7,12 +7,15 @@ import com.andrea.utility.email.EmailService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.util.List;
+
 public class CourseController {
     private CourseSerivce courseSerivce = new CourseSerivce();
     private EmailService emailService = new EmailService();
 
     public void registerRoutes(Javalin app) {
         app.post("/add-course", this::addCourse);
+        app.get("/courses", this::getAllCourse);
     }
 
     //new course
@@ -37,6 +40,22 @@ public class CourseController {
                 ctx.status(201).json(newCourse);
             }
 
+        } catch (Exception e) {
+            ctx.status(400).json(e.getMessage());
+        }
+    }
+
+    public void getAllCourse(Context ctx) {
+        try {
+            System.out.println("Get Course");
+
+            List<Course> courseList = courseSerivce.getAllCourse();
+
+            if (courseList == null || courseList.isEmpty()) {
+                ctx.status(400).json("There'isnt course");
+            } else {
+                ctx.status(201).json(courseList);
+            }
         } catch (Exception e) {
             ctx.status(400).json(e.getMessage());
         }
