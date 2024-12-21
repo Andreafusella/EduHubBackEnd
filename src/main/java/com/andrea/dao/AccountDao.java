@@ -70,6 +70,49 @@ public class AccountDao {
         }
     }
 
+    public List<AccountWithEmail> getAllAccountWithEmailWithParam(String role) {
+
+        List<AccountWithEmail> listAccount = new ArrayList<>();
+        String getAccount = """
+        SELECT
+        account.Id_Account,
+                account.Name,
+                account.Last_Name,
+                account.Role,
+                credential.Email
+        FROM
+        Account account
+        INNER JOIN
+        Credential credential
+        ON
+        account.Id_Account = credential.Id_Account
+        WHERE
+        account.Role = ?""";
+
+        try {
+            PreparedStatement getAllAccount = connection.prepareStatement(getAccount);
+
+            getAllAccount.setString(1, role);
+
+            ResultSet rs = getAllAccount.executeQuery();
+
+            while (rs.next()) {
+                AccountWithEmail account = new AccountWithEmail();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+
+                listAccount.add(account);
+            }
+
+            return listAccount;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public List<AccountWithEmail> getAllAccountWithEmail() {
 
         List<AccountWithEmail> listAccount = new ArrayList<>();

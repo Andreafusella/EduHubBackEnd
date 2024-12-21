@@ -19,6 +19,10 @@ public class AccountService {
         return accountDao.getAllAccountWithEmail();
     }
 
+    public List<AccountWithEmail> getAllAccountWithEmailWithParam(String role) {
+        return accountDao.getAllAccountWithEmailWithParam(role);
+    }
+
     public String removeAccount(int id_account) {
         return accountDao.removeAccount(id_account);
     }

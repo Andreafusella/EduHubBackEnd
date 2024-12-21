@@ -12,6 +12,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.List;
+import java.util.Map;
 
 public class AccountController {
     private AccountService accountService = new AccountService();
@@ -20,6 +21,7 @@ public class AccountController {
     public void registerRoutes(Javalin app) {
         app.post("/register", this::register);
         app.get("/get-account-with-email", this::getAccountWithEmail);
+        app.get("/get-account-with-email-with-role", this::getAllAccountWithEmailWithParam);
         app.delete("/delete", this::deleteAccount);
     }
 
@@ -92,7 +94,24 @@ public class AccountController {
         List<AccountWithEmail> listAccount= accountService.getAllAccountWithEmail();
 
         if (listAccount == null) {
-            ctx.status(204).json("There aren't Account");
+            ctx.status(404).json("There aren't Account");
+        } else {
+            ctx.status(201).json(listAccount);
+        }
+    }
+
+    public void getAllAccountWithEmailWithParam(Context ctx) {
+        System.out.println("Get account with Email with Role");
+
+        String role = ctx.queryParam("role");
+
+        if (role == null || role.isEmpty()) {
+            role = "Default";
+        }
+        List<AccountWithEmail> listAccount = accountService.getAllAccountWithEmailWithParam(role);
+
+        if (listAccount == null || listAccount.isEmpty()) {
+            ctx.status(404).json("There aren't any accounts for the role: " + role);
         } else {
             ctx.status(201).json(listAccount);
         }
