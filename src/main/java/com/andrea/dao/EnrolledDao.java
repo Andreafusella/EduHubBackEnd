@@ -1,10 +1,13 @@
 package com.andrea.dao;
 
+import com.andrea.dto.RemoveEnrolled;
 import com.andrea.exception.AccountNotFoundException;
 import com.andrea.exception.CourseNotFoundException;
 import com.andrea.exception.EnrolledExistException;
+import com.andrea.exception.EnrolledNotExistException;
 import com.andrea.model.Enrolled;
 import com.andrea.utility.database.DatabaseConnection;
+import com.andrea.validator.EnrolledDeleteValidator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,11 +62,47 @@ public class EnrolledDao {
 
             int affectedRows = newEnrolled.executeUpdate();
 
+            //TODO: aggiungere invio email allo studente
             if (affectedRows < 0) {
                 throw new SQLException("Course creation failed, no rows added");
             }
 
             return;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int removeEnrolled(RemoveEnrolled enrolled) throws EnrolledNotExistException {
+        String checkEnrolled = "SELECT COUNT(*) FROM enrolled WHERE id_account = ? AND id_course = ?";
+        String deleteEnrolled = "DELETE FROM Enrolled WHERE id_account = ? AND id_course = ?";
+
+        try {
+
+            //check enrolled exist
+            PreparedStatement enrolledExist = connection.prepareStatement(checkEnrolled);
+            enrolledExist.setInt(1, enrolled.getId_account());
+            enrolledExist.setInt(2, enrolled.getId_course());
+
+            ResultSet rs = enrolledExist.executeQuery();
+
+            if (!(rs.next() && rs.getInt(1) > 0)) {
+                System.out.println("Enrolled not exist");
+                throw new EnrolledNotExistException("Enrolled not exist");
+            }
+
+            //delete enrolled
+            PreparedStatement enrolledDelete = connection.prepareStatement(deleteEnrolled);
+            enrolledDelete.setInt(1, enrolled.getId_account());
+            enrolledDelete.setInt(2, enrolled.getId_course());
+
+            int affectedRows = enrolledDelete.executeUpdate();
+
+            if (affectedRows > 0) {
+                return 1;
+            } else {
+                return -1;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
