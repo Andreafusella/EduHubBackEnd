@@ -14,7 +14,7 @@ public class CourseDao {
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
     public Course addCourse(NewCourseDto courseDto) {
-        String addCourse = ("INSERT INTO course (name, description, dateStart, dateFinish, id_teacher) VALUES (?, ?, ?, ?, ?)");
+        String addCourse = "INSERT INTO course (name, description, dateStart, dateFinish, id_teacher) VALUES (?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement newCourse = connection.prepareStatement(addCourse, Statement.RETURN_GENERATED_KEYS);

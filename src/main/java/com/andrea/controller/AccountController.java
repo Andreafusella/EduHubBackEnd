@@ -129,17 +129,16 @@ public class AccountController {
             ctx.status(400).json("Missing or invalid 'id_account' parameter.");
         }
 
+        System.out.println("Received id_account parameter: " + idAccountParam);
         try {
 
-            Integer id_account = Integer.parseInt(idAccountParam);
+            Integer id_account = Integer.parseInt(idAccountParam.trim());
 
             AccountWithEmail account = accountService.getStudent(id_account);
 
             if (account == null) {
-
                 ctx.status(404).json("No account found with id: " + id_account);
             } else {
-
                 ctx.status(200).json(account);
             }
         } catch (NumberFormatException e) {
