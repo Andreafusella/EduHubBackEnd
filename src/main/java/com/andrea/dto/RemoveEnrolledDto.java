@@ -9,7 +9,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Data
 
-public class RemoveEnrolled {
+public class RemoveEnrolledDto {
 
     @NonNull
     private Integer id_account;

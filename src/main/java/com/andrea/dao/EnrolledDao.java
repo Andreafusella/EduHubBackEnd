@@ -1,18 +1,21 @@
 package com.andrea.dao;
 
-import com.andrea.dto.RemoveEnrolled;
+import com.andrea.dto.RemoveEnrolledDto;
 import com.andrea.exception.AccountNotFoundException;
 import com.andrea.exception.CourseNotFoundException;
 import com.andrea.exception.EnrolledExistException;
 import com.andrea.exception.EnrolledNotExistException;
+import com.andrea.model.Course;
 import com.andrea.model.Enrolled;
 import com.andrea.utility.database.DatabaseConnection;
-import com.andrea.validator.EnrolledDeleteValidator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnrolledDao {
 
@@ -73,7 +76,7 @@ public class EnrolledDao {
         }
     }
 
-    public int removeEnrolled(RemoveEnrolled enrolled) throws EnrolledNotExistException {
+    public int removeEnrolled(RemoveEnrolledDto enrolled) throws EnrolledNotExistException {
         String checkEnrolled = "SELECT COUNT(*) FROM enrolled WHERE id_account = ? AND id_course = ?";
         String deleteEnrolled = "DELETE FROM Enrolled WHERE id_account = ? AND id_course = ?";
 
@@ -103,6 +106,56 @@ public class EnrolledDao {
             } else {
                 return -1;
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Course> getAllEnrolledCourse(int id_account) {
+        List<Course> courseList = new ArrayList<>();
+        String enrolledAccount = """
+                SELECT
+                    course.id_course,
+                    course.name,
+                    course.description,
+                    course.dateStart,
+                    course.dateFinish,
+                    course.id_teacher
+                FROM
+                    Enrolled enrolled
+                INNER JOIN
+                    Course course
+                ON
+                    enrolled.id_course = course.id_course
+                WHERE
+                    enrolled.id_account = ?;
+                """;
+
+        //find enrolled course with id_account
+        try {
+            PreparedStatement courseStm = connection.prepareStatement(enrolledAccount);
+            courseStm.setInt(1, id_account);
+
+            ResultSet rs = courseStm.executeQuery();
+
+            while (rs.next()) {
+                Course course = new Course();
+                course.setId_course(rs.getInt("id_course"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDateStart(rs.getObject("datestart", LocalDate.class));
+                course.setDateFinish(rs.getObject("datefinish", LocalDate.class));
+                course.setId_teacher(rs.getInt("id_teacher"));
+
+                courseList.add(course);
+            }
+
+            if (courseList.isEmpty() || courseList == null) {
+                return null;
+            } else {
+                return courseList;
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

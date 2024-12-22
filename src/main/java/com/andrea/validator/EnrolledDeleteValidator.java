@@ -1,12 +1,11 @@
 package com.andrea.validator;
 
-import com.andrea.dto.RemoveEnrolled;
+import com.andrea.dto.RemoveEnrolledDto;
 import com.andrea.exception.ValidationException;
-import com.andrea.model.Enrolled;
 
 public class EnrolledDeleteValidator {
 
-    public static void validate(RemoveEnrolled enrolled) throws ValidationException {
+    public static void validate(RemoveEnrolledDto enrolled) throws ValidationException {
 
         if (enrolled.getId_account() <= 0) {
             throw new ValidationException("Invalid 'id_account'. It must be a positive integer.");
