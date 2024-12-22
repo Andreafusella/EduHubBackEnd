@@ -40,7 +40,7 @@ public class AccountController {
 
             NewAccountValidator.validate(account);
 
-            Account newAccount = accountService.addAccount(account);
+            AccountWithEmail newAccount = accountService.addAccount(account);
 
             if (newAccount == null) {
                 ctx.status(400).json("Invalid request");

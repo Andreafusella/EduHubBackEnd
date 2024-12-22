@@ -1,11 +1,13 @@
 package com.andrea.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class AccountWithEmail {
 
     @NonNull
@@ -22,4 +24,7 @@ public class AccountWithEmail {
 
     @NonNull
     private String email;
+
+    @NonNull
+    private int avatar;
 }

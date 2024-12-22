@@ -16,12 +16,15 @@ public class AccountDao {
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
     //todo: correggere se email gia esiste con eccezione personalizzata
-    public Account addAccount(NewAccountDto account) throws EmailExistException {
+    public AccountWithEmail addAccount(NewAccountDto account) throws EmailExistException {
         String addAccount = "INSERT INTO account (name, last_name, role) VALUES (?, ?, ?)";
         String emailExist = "SELECT COUNT(*) FROM credential WHERE email = ?";
         String addCredential = "INSERT INTO credential (id_account, email, password) VALUES (?, ?, ?)";
+        String addAvatar = "INSERT INTO settingaccount (id_account, avatar) VALUES (?, ?)";
 
         try {
+
+            //controllo se esiste già l'email
             PreparedStatement checkEmail = connection.prepareStatement(emailExist);
             checkEmail.setString(1, account.getEmail());
 
@@ -32,6 +35,7 @@ public class AccountDao {
                 throw new EmailExistException("Email already exist");
             }
 
+            //creazione riga nuovo account
             PreparedStatement newAccount = connection.prepareStatement(addAccount, Statement.RETURN_GENERATED_KEYS);
 
             newAccount.setString(1, account.getName());
@@ -51,6 +55,7 @@ public class AccountDao {
                 throw new SQLException("Account creation failed, no rows added");
             }
 
+            //creazione riga credenziali
             PreparedStatement newCredential = connection.prepareStatement(addCredential);
             String hashedPassword = BCrypt.hashpw(account.getPassword(), BCrypt.gensalt());
 
@@ -60,7 +65,15 @@ public class AccountDao {
 
             newCredential.executeUpdate();
 
-            Account newAccountReturn = new Account(generateId, account.getName(), account.getLast_name(), account.getRole());
+            AccountWithEmail newAccountReturn = new AccountWithEmail(generateId, account.getName(), account.getLast_name(), account.getRole(), account.getEmail(), account.getAvatar());
+
+            //creazione riga avatar
+            PreparedStatement newAvatar = connection.prepareStatement(addAvatar);
+
+            newAvatar.setInt(1, generateId);
+            newAvatar.setInt(2, account.getAvatar());
+
+            newAvatar.executeUpdate();
 
             return newAccountReturn;
 
@@ -74,20 +87,25 @@ public class AccountDao {
 
         List<AccountWithEmail> listAccount = new ArrayList<>();
         String getAccount = """
-        SELECT
-        account.Id_Account,
+            SELECT
+                account.Id_Account,
                 account.Name,
                 account.Last_Name,
                 account.Role,
-                credential.Email
-        FROM
-        Account account
-        INNER JOIN
-        Credential credential
-        ON
-        account.Id_Account = credential.Id_Account
-        WHERE
-        account.Role = ?""";
+                credential.Email,
+                settingaccount.Avatar
+            FROM
+                Account account
+            INNER JOIN
+                Credential credential
+                ON account.Id_Account = credential.Id_Account
+            INNER JOIN
+                SettingAccount settingaccount
+                ON account.Id_Account = settingaccount.Id_Account
+            WHERE
+                account.Role = ?
+            ORDER BY
+                account.Id_Account DESC;""";
 
         try {
             PreparedStatement getAllAccount = connection.prepareStatement(getAccount);
@@ -103,6 +121,7 @@ public class AccountDao {
                 account.setLastName(rs.getString("last_name"));
                 account.setRole(rs.getString("role"));
                 account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
 
                 listAccount.add(account);
             }
@@ -117,19 +136,23 @@ public class AccountDao {
 
         List<AccountWithEmail> listAccount = new ArrayList<>();
         String getAccount = """
-        SELECT
-        account.Id_Account,
+            SELECT
+                account.Id_Account,
                 account.Name,
                 account.Last_Name,
                 account.Role,
-                credential.Email
-        FROM
-        Account account
-        INNER JOIN
-        Credential credential
-        ON
-        account.Id_Account = credential.Id_Account""";
-
+                credential.Email,
+                settingaccount.Avatar
+            FROM
+                Account account
+            INNER JOIN
+                Credential credential
+                ON account.Id_Account = credential.Id_Account
+            INNER JOIN
+                SettingAccount settingaccount
+                ON account.Id_Account = settingaccount.Id_Account
+            ORDER BY
+                account.Id_Account DESC;""";
         try {
             PreparedStatement getAllAccount = connection.prepareStatement(getAccount);
 
@@ -142,6 +165,7 @@ public class AccountDao {
                 account.setLastName(rs.getString("last_name"));
                 account.setRole(rs.getString("role"));
                 account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
 
                 listAccount.add(account);
             }

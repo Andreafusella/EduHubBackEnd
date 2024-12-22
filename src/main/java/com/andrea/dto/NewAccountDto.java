@@ -23,4 +23,7 @@ public class NewAccountDto {
 
     @NonNull
     private String password;
+
+    @NonNull
+    private int avatar;
 }

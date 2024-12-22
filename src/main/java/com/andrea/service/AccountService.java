@@ -11,7 +11,7 @@ import java.util.List;
 public class AccountService {
     private AccountDao accountDao = new AccountDao();
 
-    public Account addAccount(NewAccountDto account) throws EmailExistException {
+    public AccountWithEmail addAccount(NewAccountDto account) throws EmailExistException {
         return accountDao.addAccount(account);
     }
 
