@@ -207,4 +207,51 @@ public class AccountDao {
             throw new RuntimeException(e);
         }
     }
+
+    //get student
+    public AccountWithEmail getStudent(int id_account) {
+        String findStudent = """
+            SELECT
+                account.Id_Account,
+                account.Name,
+                account.Last_Name,
+                account.Role,
+                credential.Email,
+                settingaccount.Avatar
+            FROM
+                Account account
+            INNER JOIN
+                Credential credential
+                ON account.Id_Account = credential.Id_Account
+            INNER JOIN
+                SettingAccount settingaccount
+                ON account.Id_Account = settingaccount.Id_Account
+            WHERE
+                account.Id_Account = ?
+                AND account.Role = 'Student';""";
+
+        try {
+            PreparedStatement getStudent = connection.prepareStatement(findStudent);
+
+            getStudent.setInt(1, id_account);
+
+            ResultSet rs = getStudent.executeQuery();
+
+            if (rs.next()) {
+                AccountWithEmail account = new AccountWithEmail();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
+
+                return account;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

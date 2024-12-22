@@ -23,6 +23,7 @@ public class AccountController {
         app.get("/get-account-with-email", this::getAccountWithEmail);
         app.get("/get-account-with-email-with-role", this::getAllAccountWithEmailWithParam);
         app.delete("/delete", this::deleteAccount);
+        app.get("/student", this::getStudent);
     }
 
 
@@ -89,6 +90,7 @@ public class AccountController {
         }
     }
 
+    //get al account
     public void getAccountWithEmail(Context ctx) {
         System.out.println("Get account with Email");
         List<AccountWithEmail> listAccount= accountService.getAllAccountWithEmail();
@@ -100,6 +102,7 @@ public class AccountController {
         }
     }
 
+    //get all account with one param
     public void getAllAccountWithEmailWithParam(Context ctx) {
         System.out.println("Get account with Email with Role");
 
@@ -114,6 +117,34 @@ public class AccountController {
             ctx.status(404).json("There aren't any accounts for the role: " + role);
         } else {
             ctx.status(201).json(listAccount);
+        }
+    }
+
+    public void getStudent(Context ctx) {
+        System.out.println("Get student");
+
+        String idAccountParam = ctx.queryParam("id_account");
+
+        if (idAccountParam == null || idAccountParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_account' parameter.");
+        }
+
+        try {
+
+            Integer id_account = Integer.parseInt(idAccountParam);
+
+            AccountWithEmail account = accountService.getStudent(id_account);
+
+            if (account == null) {
+
+                ctx.status(404).json("No account found with id: " + id_account);
+            } else {
+
+                ctx.status(200).json(account);
+            }
+        } catch (NumberFormatException e) {
+
+            ctx.status(400).json("Invalid 'id_account' parameter. It must be an integer.");
         }
     }
 }

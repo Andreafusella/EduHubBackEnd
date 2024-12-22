@@ -26,4 +26,8 @@ public class AccountService {
     public String removeAccount(int id_account) {
         return accountDao.removeAccount(id_account);
     }
+
+    public AccountWithEmail getStudent(int id_account) {
+        return accountDao.getStudent(id_account);
+    }
 }
