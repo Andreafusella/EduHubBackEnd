@@ -18,12 +18,10 @@ public class NewCourseDto {
 
     @NonNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateStart;
+    private LocalDate date_start;
 
     @NonNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateFinish;
+    private LocalDate date_finish;
 
-    @NonNull
-    private int id_teacher;
 }

@@ -20,20 +20,17 @@ public class Course {
 
     @NonNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateStart;
+    private LocalDate date_start;
 
     @NonNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateFinish;
+    private LocalDate date_finish;
 
-    @NonNull
-    private int id_teacher;
-
-    public Course(String name, String description, LocalDate dateStart, LocalDate dateFinish, int id_teacher) {
+    public Course(String name, String description, LocalDate date_start, LocalDate date_finish) {
         this.name = name;
         this.description = description;
-        this.dateStart = dateStart;
-        this.dateFinish = dateFinish;
-        this.id_teacher = id_teacher;
+        this.date_start = date_start;
+        this.date_finish = date_finish;
+
     }
 }

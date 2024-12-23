@@ -14,16 +14,15 @@ public class CourseDao {
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
     public Course addCourse(NewCourseDto courseDto) {
-        String addCourse = "INSERT INTO course (name, description, dateStart, dateFinish, id_teacher) VALUES (?, ?, ?, ?, ?)";
+        String addCourse = "INSERT INTO course (name, description, date_start, date_finish) VALUES (?, ?, ?, ?)";
 
         try {
             PreparedStatement newCourse = connection.prepareStatement(addCourse, Statement.RETURN_GENERATED_KEYS);
 
             newCourse.setString(1, courseDto.getName());
             newCourse.setString(2, courseDto.getDescription());
-            newCourse.setObject(3, courseDto.getDateStart());
-            newCourse.setObject(4, courseDto.getDateFinish());
-            newCourse.setInt(5, courseDto.getId_teacher());
+            newCourse.setObject(3, courseDto.getDate_start());
+            newCourse.setObject(4, courseDto.getDate_finish());
 
             int affectedRows = newCourse.executeUpdate();
             int generateId = 0;
@@ -38,7 +37,7 @@ public class CourseDao {
                 throw new SQLException("Course creation failed, no rows added");
             }
 
-            Course newCourseReturn = new Course(generateId, courseDto.getName(), courseDto.getDescription(), courseDto.getDateStart(), courseDto.getDateFinish(), courseDto.getId_teacher());
+            Course newCourseReturn = new Course(generateId, courseDto.getName(), courseDto.getDescription(), courseDto.getDate_start(), courseDto.getDate_finish());
 
             return newCourseReturn;
         } catch (SQLException e) {
@@ -60,9 +59,8 @@ public class CourseDao {
                 course.setId_course(rs.getInt("id_course"));
                 course.setName(rs.getString("name"));
                 course.setDescription(rs.getString("description"));
-                course.setDateStart(rs.getObject("datestart", LocalDate.class));
-                course.setDateFinish(rs.getObject("datefinish", LocalDate.class));
-                course.setId_teacher(rs.getInt("id_teacher"));
+                course.setDate_start(rs.getObject("date_start", LocalDate.class));
+                course.setDate_finish(rs.getObject("date_finish", LocalDate.class));
 
                 courseList.add(course);
             }

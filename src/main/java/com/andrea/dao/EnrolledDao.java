@@ -120,7 +120,6 @@ public class EnrolledDao {
                     course.description,
                     course.dateStart,
                     course.dateFinish,
-                    course.id_teacher
                 FROM
                     Enrolled enrolled
                 INNER JOIN
@@ -143,9 +142,8 @@ public class EnrolledDao {
                 course.setId_course(rs.getInt("id_course"));
                 course.setName(rs.getString("name"));
                 course.setDescription(rs.getString("description"));
-                course.setDateStart(rs.getObject("datestart", LocalDate.class));
-                course.setDateFinish(rs.getObject("datefinish", LocalDate.class));
-                course.setId_teacher(rs.getInt("id_teacher"));
+                course.setDate_start(rs.getObject("date_start", LocalDate.class));
+                course.setDate_finish(rs.getObject("date_finish", LocalDate.class));
 
                 courseList.add(course);
             }

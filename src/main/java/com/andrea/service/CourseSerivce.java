@@ -1,6 +1,5 @@
 package com.andrea.service;
 
-import com.andrea.controller.CourseController;
 import com.andrea.dao.CourseDao;
 import com.andrea.dto.NewCourseDto;
 import com.andrea.model.Course;
