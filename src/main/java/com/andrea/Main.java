@@ -4,6 +4,7 @@ import com.andrea.auth.controller.AuthController;
 import com.andrea.controller.AccountController;
 import com.andrea.controller.CourseController;
 import com.andrea.controller.EnrolledController;
+import com.andrea.controller.SubjectController;
 import io.javalin.Javalin;
 
 public class Main {
@@ -21,11 +22,13 @@ public class Main {
         AuthController authController = new AuthController();
         CourseController courseController = new CourseController();
         EnrolledController enrolledController = new EnrolledController();
+        SubjectController subjectController = new SubjectController();
 
         accountController.registerRoutes(app);
         authController.registerRoutes(app);
         courseController.registerRoutes(app);
         enrolledController.registerRoutes(app);
+        subjectController.registerRoutes(app);
 
         System.out.println("Server in running on port 8000");
     }

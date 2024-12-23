@@ -30,7 +30,7 @@ public class CourseController {
                 ctx.status(400).json("Invalid input data: " + e.getMessage());
             }
 
-            //todo aggiungere validazione campi body
+            //TODO aggiungere validazione campi body
 
             Course newCourse = courseSerivce.addCourse(course);
 
