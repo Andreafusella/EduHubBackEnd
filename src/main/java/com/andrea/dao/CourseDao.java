@@ -75,4 +75,31 @@ public class CourseDao {
             return null;
         }
     }
+
+    public Course getCourseById(int id_course) {
+        String getCourseByIdQuery = "SELECT * FROM course WHERE id_course = ?";
+
+        try {
+            PreparedStatement getCourseByIdStmt = connection.prepareStatement(getCourseByIdQuery);
+            getCourseByIdStmt.setInt(1, id_course);
+
+            ResultSet rs = getCourseByIdStmt.executeQuery();
+
+            if (rs.next()) {
+                Course course = new Course();
+                course.setId_course(rs.getInt("id_course"));
+                course.setName(rs.getString("name"));
+                course.setDescription(rs.getString("description"));
+                course.setDate_start(rs.getObject("date_start", LocalDate.class));
+                course.setDate_finish(rs.getObject("date_finish", LocalDate.class));
+
+                return course;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching course by id: " + e.getMessage(), e);
+        }
+    }
+
 }

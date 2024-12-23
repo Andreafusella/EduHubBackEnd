@@ -1,5 +1,6 @@
 package com.andrea.dao;
 
+import com.andrea.dto.AllSubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Subject;
 import com.andrea.utility.database.DatabaseConnection;
@@ -54,22 +55,46 @@ public class SubjectDao {
         }
     }
 
-    public List<Subject> getAllSubjects() {
-        List<Subject> subjects = new ArrayList<>();
-        String query = "SELECT * FROM subject";
+    public List<AllSubjectDto> getAllSubjects() {
+        List<AllSubjectDto> subjects = new ArrayList<>();
+        String getSubject = "SELECT * FROM subject ORDER BY name ASC";
+        String getNameTeacher = "SELECT name FROM account WHERE id_account = ?";
+        String getNameCourse = "SELECT name FROM course WHERE id_course = ?";
 
-        try (
-
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(getSubject);
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Integer idSubject = resultSet.getInt("id_subject");
                 String name = resultSet.getString("name");
-                Integer idCourse = resultSet.getInt("id_course");
-                Integer idTeacher = resultSet.getInt("id_teacher");
+                Integer id_course = resultSet.getInt("id_course");
+                Integer id_teacher = resultSet.getInt("id_teacher");
 
-                Subject subject = new Subject(idSubject, name, idCourse, idTeacher);
+                // Ottieni il nome del docente
+                String nameTeacherReturn = "";
+                try (PreparedStatement nameTeacherStmt = connection.prepareStatement(getNameTeacher)) {
+                    nameTeacherStmt.setInt(1, id_teacher);
+                    try (ResultSet rsNameTeacher = nameTeacherStmt.executeQuery()) {
+                        if (rsNameTeacher.next()) {
+                            nameTeacherReturn = rsNameTeacher.getString("name");
+                        }
+                    }
+                }
+
+                // Ottieni il nome del corso
+                String nameCourseReturn = "";
+                try (PreparedStatement nameCourseStmt = connection.prepareStatement(getNameCourse)) {
+                    nameCourseStmt.setInt(1, id_course);
+                    try (ResultSet rsNameCourse = nameCourseStmt.executeQuery()) {
+                        if (rsNameCourse.next()) {
+                            nameCourseReturn = rsNameCourse.getString("name");
+                        }
+                    }
+                }
+
+                // Crea l'oggetto Subject con tutti i dati
+                AllSubjectDto subject = new AllSubjectDto(idSubject, name, id_course, nameCourseReturn, id_teacher, nameTeacherReturn);
                 subjects.add(subject);
             }
         } catch (SQLException e) {

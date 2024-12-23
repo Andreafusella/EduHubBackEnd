@@ -1,6 +1,7 @@
 package com.andrea.service;
 
 import com.andrea.dao.SubjectDao;
+import com.andrea.dto.AllSubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Subject;
 
@@ -13,7 +14,7 @@ public class SubjectService {
         return subjectDao.addSubject(subject);
     }
 
-    public List<Subject> getAllSubjects() {
+    public List<AllSubjectDto> getAllSubjects() {
         return subjectDao.getAllSubjects();
     }
 

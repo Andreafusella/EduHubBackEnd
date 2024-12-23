@@ -1,5 +1,6 @@
 package com.andrea.controller;
 
+import com.andrea.dto.AllSubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Subject;
 import com.andrea.service.SubjectService;
@@ -50,7 +51,7 @@ public class SubjectController {
         try {
             System.out.println("Get Subjects");
 
-            List<Subject> subjects = subjectService.getAllSubjects();
+            List<AllSubjectDto> subjects = subjectService.getAllSubjects();
 
             if (subjects.isEmpty()) {
                 ctx.status(404).json("No subjects found");

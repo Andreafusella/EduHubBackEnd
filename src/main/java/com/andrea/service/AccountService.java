@@ -30,4 +30,12 @@ public class AccountService {
     public AccountWithEmail getStudent(int id_account) {
         return accountDao.getStudent(id_account);
     }
+
+    public List<AccountWithEmail> getStudentsByCourse(int id_account) {
+        return accountDao.getStudentsByCourse(id_account);
+    }
+
+    public List<AccountWithEmail> getStudentsNotInCourse(int id_account) {
+        return accountDao.getStudentsNotInCourse(id_account);
+    }
 }

@@ -118,8 +118,8 @@ public class EnrolledDao {
                     course.id_course,
                     course.name,
                     course.description,
-                    course.dateStart,
-                    course.dateFinish,
+                    course.date_start,
+                    course.date_finish
                 FROM
                     Enrolled enrolled
                 INNER JOIN

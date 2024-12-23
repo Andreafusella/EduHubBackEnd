@@ -2,7 +2,6 @@ package com.andrea.dao;
 
 import com.andrea.dto.NewAccountDto;
 import com.andrea.exception.EmailExistException;
-import com.andrea.model.Account;
 import com.andrea.model.AccountWithEmail;
 import com.andrea.utility.database.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
@@ -252,6 +251,111 @@ public class AccountDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<AccountWithEmail> getStudentsByCourse(int id_course) {
+        String findStudentsByCourse = """
+        SELECT
+            account.Id_Account,
+            account.Name,
+            account.Last_Name,
+            account.Role,
+            credential.Email,
+            settingaccount.Avatar
+        FROM
+            Account account
+        INNER JOIN
+            Credential credential ON account.Id_Account = credential.Id_Account
+        INNER JOIN
+            SettingAccount settingaccount ON account.Id_Account = settingaccount.Id_Account
+        INNER JOIN
+            Enrolled enrolled ON account.Id_Account = enrolled.Id_Account
+        WHERE
+            enrolled.Id_Course = ?
+            AND account.Role = 'Student';""";
+
+        try {
+            PreparedStatement getStudents = connection.prepareStatement(findStudentsByCourse);
+            getStudents.setInt(1, id_course);
+
+            ResultSet rs = getStudents.executeQuery();
+
+            List<AccountWithEmail> students = new ArrayList<>();
+            while (rs.next()) {
+                AccountWithEmail account = new AccountWithEmail();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
+
+                students.add(account);
+            }
+
+            if (students.isEmpty()) {
+                return null;
+            } else {
+                return students;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<AccountWithEmail> getStudentsNotInCourse(int id_course) {
+
+        String findStudentsNotInCourse = """
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount ON account.Id_Account = settingaccount.Id_Account
+                LEFT JOIN
+                    Enrolled enrolled ON account.Id_Account = enrolled.Id_Account AND enrolled.Id_Course = ?
+                WHERE
+                    account.Role = 'Student'
+                    AND enrolled.Id_Account IS NULL
+                ORDER BY
+                    account.Id_Account DESC;""";
+
+        try {
+            PreparedStatement getStudentsNotInCourse = connection.prepareStatement(findStudentsNotInCourse);
+            getStudentsNotInCourse.setInt(1, id_course);
+
+            ResultSet rs = getStudentsNotInCourse.executeQuery();
+
+            List<AccountWithEmail> studentsNotInCourse = new ArrayList<>();
+            while (rs.next()) {
+                AccountWithEmail account = new AccountWithEmail();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
+
+                studentsNotInCourse.add(account);
+            }
+
+            if (studentsNotInCourse.isEmpty()) {
+                return null;
+            } else {
+                return studentsNotInCourse;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while fetching students not in course", e);
         }
     }
 }

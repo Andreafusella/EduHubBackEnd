@@ -16,6 +16,7 @@ public class CourseController {
     public void registerRoutes(Javalin app) {
         app.post("/add-course", this::addCourse);
         app.get("/courses", this::getAllCourse);
+        app.get("/course-by-id", this::getCourseById);
     }
 
     //new course
@@ -56,6 +57,31 @@ public class CourseController {
             } else {
                 ctx.status(201).json(courseList);
             }
+        } catch (Exception e) {
+            ctx.status(400).json(e.getMessage());
+        }
+    }
+
+    public void getCourseById(Context ctx) {
+        try {
+            System.out.println("Get Course By Id");
+            int id_course = 0;
+            try {
+                id_course = Integer.parseInt(ctx.queryParam("id_course"));
+            } catch (Exception e) {
+                ctx.status(400).json("Invalid input data: " + e.getMessage());
+            }
+
+            Course course = courseSerivce.getCourseById(id_course);
+
+            if (course == null) {
+                ctx.status(404).json("Course not found");
+            } else {
+                ctx.status(200).json(course);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid course ID format");
         } catch (Exception e) {
             ctx.status(400).json(e.getMessage());
         }

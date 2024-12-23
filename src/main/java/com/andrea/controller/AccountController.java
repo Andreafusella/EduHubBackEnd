@@ -24,6 +24,8 @@ public class AccountController {
         app.get("/get-account-with-email-with-role", this::getAllAccountWithEmailWithParam);
         app.delete("/delete", this::deleteAccount);
         app.get("/student", this::getStudent);
+        app.get("/get-account-by-course", this::getAllStudentByCourse);
+        app.get("/get-studentNotInCourse-by-course", this::getAllStudentsNotInCourse);
     }
 
 
@@ -146,4 +148,60 @@ public class AccountController {
             ctx.status(400).json("Invalid 'id_account' parameter. It must be an integer.");
         }
     }
+
+    public void getAllStudentByCourse(Context ctx) {
+        System.out.println("Get all students by course");
+
+        String idCourseParam = ctx.queryParam("id_course");
+
+        if (idCourseParam == null || idCourseParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_course' parameter.");
+            return;
+        }
+
+        System.out.println("Received id_course parameter: " + idCourseParam);
+        try {
+            Integer id_course = Integer.parseInt(idCourseParam.trim());
+
+            List<AccountWithEmail> students = accountService.getStudentsByCourse(id_course);
+
+
+            if (students == null || students.isEmpty()) {
+                ctx.status(404).json("No students found for course id: " + id_course);
+            } else {
+
+                ctx.status(200).json(students);
+            }
+        } catch (NumberFormatException e) {
+
+            ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
+    public void getAllStudentsNotInCourse(Context ctx) {
+        System.out.println("Get all students not in course");
+
+        String idCourseParam = ctx.queryParam("id_course");
+
+        if (idCourseParam == null || idCourseParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_course' parameter.");
+            return;
+        }
+
+        System.out.println("Received id_course parameter: " + idCourseParam);
+        try {
+            Integer id_course = Integer.parseInt(idCourseParam.trim());
+
+            List<AccountWithEmail> studentsNotInCourse = accountService.getStudentsNotInCourse(id_course);
+
+            if (studentsNotInCourse == null || studentsNotInCourse.isEmpty()) {
+                ctx.status(404).json("No students found who are not enrolled in course id: " + id_course);
+            } else {
+                ctx.status(200).json(studentsNotInCourse);
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
 }
