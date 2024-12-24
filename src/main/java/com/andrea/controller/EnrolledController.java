@@ -34,9 +34,9 @@ public class EnrolledController {
 
             EnrolledValidator.validate(enrolled);
 
-            enrolledService.addEnrolled(enrolled);
+            Enrolled enrolledReturn = enrolledService.addEnrolled(enrolled);
 
-            ctx.status(201).json("Enrolled Created!");
+            ctx.status(201).json(enrolledReturn);
         } catch (ValidationException e) {
             ctx.status(400).json(e.getMessage());
         } catch (EnrolledExistException e) {
@@ -84,28 +84,38 @@ public class EnrolledController {
             System.out.println("Get Enrolled Course");
 
             String idAccountParam = ctx.queryParam("id_account");
-            System.out.println(idAccountParam);
+            String flagParam = ctx.queryParam("in_course");
 
-            if (idAccountParam == null || idAccountParam.isEmpty()) {
+
+            if (flagParam == null || flagParam.isEmpty()) {
                 ctx.status(400).json("Missing 'id_account' parameter.");
+                return;
+            }
+
+            if (!flagParam.equalsIgnoreCase("true") && !flagParam.equalsIgnoreCase("false")) {
+                ctx.status(400).json("Invalid 'in_course' parameter. It must be 'true' or 'false'.");
                 return;
             }
 
             int id_account = 0;
             try {
                 id_account = Integer.parseInt(idAccountParam);
+                boolean in_course = Boolean.parseBoolean(flagParam.trim());
+
+                List<Course> courseList = enrolledService.getAllEnrolledCourse(id_account, in_course);
+
+                if (courseList != null && !courseList.isEmpty()) {
+                    ctx.status(200).json(courseList);
+                } else {
+                    ctx.status(404).json("Not found any enrolled on course");
+                }
+
             } catch (NumberFormatException e) {
                 ctx.status(400).json("Invalid 'id_account' parameter: it must be an integer.");
                 return;
             }
 
-            List<Course> courseList = enrolledService.getAllEnrolledCourse(id_account);
 
-            if (courseList != null && !courseList.isEmpty()) {
-                ctx.status(200).json(courseList);
-            } else {
-                ctx.status(404).json("Not found any enrolled on course");
-            }
         } catch (Exception e) {
             System.out.println(e);
             ctx.status(500).json("An error occurred while processing the request.");

@@ -21,7 +21,7 @@ public class EnrolledDao {
 
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
-    public void addEnrolled(Enrolled enrolled) throws EnrolledExistException, AccountNotFoundException, CourseNotFoundException {
+    public Enrolled addEnrolled(Enrolled enrolled) throws EnrolledExistException, AccountNotFoundException, CourseNotFoundException {
         String addEnrolled = "INSERT INTO enrolled (id_account, id_course, enrollment_date) VALUES (?, ?, ?)";
         String checkEnrolledExist = "SELECT COUNT(*) FROM enrolled WHERE id_account = ? AND id_course = ?";
         String checkAccountExist = "SELECT COUNT(*) FROM Account WHERE id_account = ?";
@@ -70,7 +70,7 @@ public class EnrolledDao {
                 throw new SQLException("Course creation failed, no rows added");
             }
 
-            return;
+            return enrolled;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -111,9 +111,11 @@ public class EnrolledDao {
         }
     }
 
-    public List<Course> getAllEnrolledCourse(int id_account) {
+    public List<Course> getAllEnrolledCourse(int id_account, boolean inCourse) {
         List<Course> courseList = new ArrayList<>();
-        String enrolledAccount = """
+        String enrolledAccount = "";
+        if (inCourse) {
+            enrolledAccount = """
                 SELECT
                     course.id_course,
                     course.name,
@@ -129,6 +131,25 @@ public class EnrolledDao {
                 WHERE
                     enrolled.id_account = ?;
                 """;
+        } else {
+            enrolledAccount = """
+                SELECT
+                    course.id_course,
+                    course.name,
+                    course.description,
+                    course.date_start,
+                    course.date_finish
+                FROM
+                    Course course
+                WHERE
+                    course.id_course NOT IN (
+                        SELECT enrolled.id_course
+                        FROM Enrolled enrolled
+                        WHERE enrolled.id_account = ?
+                    );
+                """;
+        }
+
 
         //find enrolled course with id_account
         try {

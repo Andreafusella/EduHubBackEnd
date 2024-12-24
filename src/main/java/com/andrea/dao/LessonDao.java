@@ -174,14 +174,25 @@ public class LessonDao {
         return lessons;
     }
 
-    public List<Lesson> getLastLessons(int id_course) {
-        String query = """
-        SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
-        FROM lesson
-        WHERE id_course = ? AND lesson_date <= CURRENT_DATE
-        ORDER BY lesson_date DESC, hour_start DESC
-        LIMIT 5;
-    """;
+    public List<Lesson> getPrevLessons(int id_course, boolean flag) {
+        String query = "";
+        if (flag) {
+            query = """
+                SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
+                FROM lesson
+                WHERE id_course = ? AND lesson_date >= CURRENT_DATE
+                ORDER BY lesson_date ASC, hour_start ASC
+                LIMIT 5;
+            """;
+        } else {
+            query = """
+                SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
+                FROM lesson
+                WHERE id_course = ? AND lesson_date < CURRENT_DATE
+                ORDER BY lesson_date DESC, hour_start DESC
+                LIMIT 5;
+            """;
+        }
 
         List<Lesson> lessons = new ArrayList<>();
 
@@ -216,7 +227,7 @@ public class LessonDao {
         String query = """
         SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
         FROM lesson
-        WHERE id_course = ? AND lesson_date > CURRENT_DATE
+        WHERE id_course = ? AND lesson_date >= CURRENT_DATE
         ORDER BY lesson_date ASC, hour_start ASC
         LIMIT 5;
     """;
