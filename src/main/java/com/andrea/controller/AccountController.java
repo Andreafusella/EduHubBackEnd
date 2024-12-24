@@ -26,6 +26,7 @@ public class AccountController {
         app.get("/student", this::getStudent);
         app.get("/get-account-by-course", this::getAllStudentByCourse);
         app.get("/get-studentNotInCourse-by-course", this::getAllStudentsNotInCourse);
+        app.get("/get-student-by-email", this::getStudentByEmail);
     }
 
 
@@ -201,6 +202,31 @@ public class AccountController {
             }
         } catch (NumberFormatException e) {
             ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
+    public void getStudentByEmail(Context ctx) {
+        System.out.println("Get student by email");
+
+        String emailParam = ctx.queryParam("email");
+
+        if (emailParam == null || emailParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'email' parameter.");
+            return;
+        }
+
+        System.out.println("Received email parameter: " + emailParam);
+
+        try {
+            AccountWithEmail student = accountService.getStudentByEmail(emailParam);
+
+            if (student == null) {
+                ctx.status(404).json("No student found with email: " + emailParam);
+            } else {
+                ctx.status(200).json(student);
+            }
+        } catch (Exception e) {
+            ctx.status(500).json("Error while fetching student: " + e.getMessage());
         }
     }
 

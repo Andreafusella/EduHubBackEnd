@@ -14,7 +14,6 @@ public class AccountDao {
 
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
-    //todo: correggere se email gia esiste con eccezione personalizzata
     public AccountWithEmail addAccount(NewAccountDto account) throws EmailExistException {
         String addAccount = "INSERT INTO account (name, last_name, role) VALUES (?, ?, ?)";
         String emailExist = "SELECT COUNT(*) FROM credential WHERE email = ?";
@@ -45,7 +44,7 @@ public class AccountDao {
             int generateId = 0;
 
             if (affectedRows > 0) {
-                try (ResultSet generatedKeys = newAccount.getGeneratedKeys()){
+                try (ResultSet generatedKeys = newAccount.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         generateId = generatedKeys.getInt(1);
                     }
@@ -86,25 +85,25 @@ public class AccountDao {
 
         List<AccountWithEmail> listAccount = new ArrayList<>();
         String getAccount = """
-            SELECT
-                account.Id_Account,
-                account.Name,
-                account.Last_Name,
-                account.Role,
-                credential.Email,
-                settingaccount.Avatar
-            FROM
-                Account account
-            INNER JOIN
-                Credential credential
-                ON account.Id_Account = credential.Id_Account
-            INNER JOIN
-                SettingAccount settingaccount
-                ON account.Id_Account = settingaccount.Id_Account
-            WHERE
-                account.Role = ?
-            ORDER BY
-                account.Id_Account DESC;""";
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential
+                    ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount
+                    ON account.Id_Account = settingaccount.Id_Account
+                WHERE
+                    account.Role = ?
+                ORDER BY
+                    account.Id_Account DESC;""";
 
         try {
             PreparedStatement getAllAccount = connection.prepareStatement(getAccount);
@@ -135,23 +134,23 @@ public class AccountDao {
 
         List<AccountWithEmail> listAccount = new ArrayList<>();
         String getAccount = """
-            SELECT
-                account.Id_Account,
-                account.Name,
-                account.Last_Name,
-                account.Role,
-                credential.Email,
-                settingaccount.Avatar
-            FROM
-                Account account
-            INNER JOIN
-                Credential credential
-                ON account.Id_Account = credential.Id_Account
-            INNER JOIN
-                SettingAccount settingaccount
-                ON account.Id_Account = settingaccount.Id_Account
-            ORDER BY
-                account.Id_Account DESC;""";
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential
+                    ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount
+                    ON account.Id_Account = settingaccount.Id_Account
+                ORDER BY
+                    account.Id_Account DESC;""";
         try {
             PreparedStatement getAllAccount = connection.prepareStatement(getAccount);
 
@@ -210,24 +209,24 @@ public class AccountDao {
     //get student
     public AccountWithEmail getStudent(int id_account) {
         String findStudent = """
-            SELECT
-                account.Id_Account,
-                account.Name,
-                account.Last_Name,
-                account.Role,
-                credential.Email,
-                settingaccount.Avatar
-            FROM
-                Account account
-            INNER JOIN
-                Credential credential
-                ON account.Id_Account = credential.Id_Account
-            INNER JOIN
-                SettingAccount settingaccount
-                ON account.Id_Account = settingaccount.Id_Account
-            WHERE
-                account.Id_Account = ?
-                AND account.Role = 'Student';""";
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential
+                    ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount
+                    ON account.Id_Account = settingaccount.Id_Account
+                WHERE
+                    account.Id_Account = ?
+                    AND account.Role = 'Student';""";
 
         try {
             PreparedStatement getStudent = connection.prepareStatement(findStudent);
@@ -256,24 +255,24 @@ public class AccountDao {
 
     public List<AccountWithEmail> getStudentsByCourse(int id_course) {
         String findStudentsByCourse = """
-        SELECT
-            account.Id_Account,
-            account.Name,
-            account.Last_Name,
-            account.Role,
-            credential.Email,
-            settingaccount.Avatar
-        FROM
-            Account account
-        INNER JOIN
-            Credential credential ON account.Id_Account = credential.Id_Account
-        INNER JOIN
-            SettingAccount settingaccount ON account.Id_Account = settingaccount.Id_Account
-        INNER JOIN
-            Enrolled enrolled ON account.Id_Account = enrolled.Id_Account
-        WHERE
-            enrolled.Id_Course = ?
-            AND account.Role = 'Student';""";
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount ON account.Id_Account = settingaccount.Id_Account
+                INNER JOIN
+                    Enrolled enrolled ON account.Id_Account = enrolled.Id_Account
+                WHERE
+                    enrolled.Id_Course = ?
+                    AND account.Role = 'Student';""";
 
         try {
             PreparedStatement getStudents = connection.prepareStatement(findStudentsByCourse);
@@ -356,6 +355,51 @@ public class AccountDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Error while fetching students not in course", e);
+        }
+    }
+
+    public AccountWithEmail getStudentByEmail(String email) {
+
+        String findStudentByEmail = """
+                SELECT
+                    account.Id_Account,
+                    account.Name,
+                    account.Last_Name,
+                    account.Role,
+                    credential.Email,
+                    settingaccount.Avatar
+                FROM
+                    Account account
+                INNER JOIN
+                    Credential credential ON account.Id_Account = credential.Id_Account
+                INNER JOIN
+                    SettingAccount settingaccount ON account.Id_Account = settingaccount.Id_Account
+                WHERE
+                    credential.Email = ?
+                    AND account.Role = 'Student';""";
+
+        try {
+            PreparedStatement getStudentByEmail = connection.prepareStatement(findStudentByEmail);
+            getStudentByEmail.setString(1, email);
+
+            ResultSet rs = getStudentByEmail.executeQuery();
+
+            if (rs.next()) {
+                AccountWithEmail account = new AccountWithEmail();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
+
+                return account;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while fetching student by email", e);
         }
     }
 }

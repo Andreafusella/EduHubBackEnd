@@ -38,4 +38,8 @@ public class AccountService {
     public List<AccountWithEmail> getStudentsNotInCourse(int id_account) {
         return accountDao.getStudentsNotInCourse(id_account);
     }
+
+    public AccountWithEmail getStudentByEmail(String email) {
+        return accountDao.getStudentByEmail(email);
+    }
 }
