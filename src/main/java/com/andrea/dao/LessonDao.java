@@ -174,4 +174,80 @@ public class LessonDao {
         return lessons;
     }
 
+    public List<Lesson> getLastLessons(int id_course) {
+        String query = """
+        SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
+        FROM lesson
+        WHERE id_course = ? AND lesson_date <= CURRENT_DATE
+        ORDER BY lesson_date DESC, hour_start DESC
+        LIMIT 5;
+    """;
+
+        List<Lesson> lessons = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id_course);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Lesson lesson = new Lesson();
+
+                lesson.setId_lesson(resultSet.getInt("id_lesson"));
+                lesson.setId_course(resultSet.getInt("id_course"));
+                lesson.setLesson_date(resultSet.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(resultSet.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(resultSet.getTime("hour_end").toLocalTime());
+                lesson.setClassroom(resultSet.getString("classroom"));
+                lesson.setTitle(resultSet.getString("title"));
+                lesson.setDescription(resultSet.getString("description"));
+                lesson.setId_subject(resultSet.getInt("id_subject"));
+
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving last lessons", e);
+        }
+
+        return lessons;
+    }
+
+    public List<Lesson> getNextLessons(int id_course) {
+        String query = """
+        SELECT id_lesson, id_course, lesson_date, hour_start, hour_end, classroom, title, description, id_subject
+        FROM lesson
+        WHERE id_course = ? AND lesson_date > CURRENT_DATE
+        ORDER BY lesson_date ASC, hour_start ASC
+        LIMIT 5;
+    """;
+
+        List<Lesson> lessons = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id_course);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Lesson lesson = new Lesson();
+
+                lesson.setId_lesson(resultSet.getInt("id_lesson"));
+                lesson.setId_course(resultSet.getInt("id_course"));
+                lesson.setLesson_date(resultSet.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(resultSet.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(resultSet.getTime("hour_end").toLocalTime());
+                lesson.setClassroom(resultSet.getString("classroom"));
+                lesson.setTitle(resultSet.getString("title"));
+                lesson.setDescription(resultSet.getString("description"));
+                lesson.setId_subject(resultSet.getInt("id_subject"));
+
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving next lessons", e);
+        }
+
+        return lessons;
+    }
+
 }

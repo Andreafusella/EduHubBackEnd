@@ -17,6 +17,8 @@ public class LessonController {
         app.post("/lesson", this::addLesson);
         app.delete("/lesson", this::deleteLesson);
         app.get("/lesson-by-courseId", this::getLessonsByCourseId);
+        app.get("/last-lesson", this::getLastLessons);
+        app.get("/next-lesson", this::getNextLessons);
     }
 
     public void addLesson(Context ctx) {
@@ -96,6 +98,58 @@ public class LessonController {
 
             if (lessons == null || lessons.isEmpty()) {
                 ctx.status(404).json("No Lessons found for course id: " + id_course);
+            } else {
+                ctx.status(200).json(lessons);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
+    public void getLastLessons(Context ctx) {
+        System.out.println("Get Last Lessons");
+
+        String idCourseParam = ctx.queryParam("id_course");
+
+        if (idCourseParam == null || idCourseParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_course' parameter.");
+            return;
+        }
+
+        try {
+            Integer id_course = Integer.parseInt(idCourseParam.trim());
+
+            List<Lesson> lessons = lessonService.getLastLessons(id_course);
+
+            if (lessons == null || lessons.isEmpty()) {
+                ctx.status(404).json("No recent lessons found for course id: " + id_course);
+            } else {
+                ctx.status(200).json(lessons);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
+    public void getNextLessons(Context ctx) {
+        System.out.println("Get Next Lessons");
+
+        String idCourseParam = ctx.queryParam("id_course");
+
+        if (idCourseParam == null || idCourseParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_course' parameter.");
+            return;
+        }
+
+        try {
+            Integer id_course = Integer.parseInt(idCourseParam.trim());
+
+            List<Lesson> lessons = lessonService.getNextLessons(id_course);
+
+            if (lessons == null || lessons.isEmpty()) {
+                ctx.status(404).json("No upcoming lessons found for course id: " + id_course);
             } else {
                 ctx.status(200).json(lessons);
             }

@@ -20,4 +20,12 @@ public class LessonService {
     public List<Lesson> getLessonsByCourseId(int id_course) {
         return lessonDao.getLessonsByCourseId(id_course);
     }
+
+    public List<Lesson> getLastLessons(int id_course) {
+        return lessonDao.getLastLessons(id_course);
+    }
+
+    public List<Lesson> getNextLessons(int id_course) {
+        return lessonDao.getNextLessons(id_course);
+    }
 }
