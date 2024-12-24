@@ -38,14 +38,14 @@ public class AuthController {
             }
 
             if ((boolean) listReturn.get(1)) {
-                String token = JwtUtil.generateToken((int) listReturn.get(0));
+                String role = (String) listReturn.get(2);
+                int id_account = (int) listReturn.get(0);
+                String token = JwtUtil.generateToken(id_account, role);
                 Map<String, Object> response = Map.of("token", new TokenResponse(token), "role", listReturn.get(2));
                 ctx.status(201).json(response);
             } else {
                 ctx.status(401).json(Map.of("message", "Invalid credentials"));
             }
-
-
         } catch (ValidationException e) {
             ctx.status(400).json(e.getMessage());
         }

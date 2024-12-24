@@ -14,10 +14,11 @@ public class JwtUtil {
     private static final JWTVerifier VERIFIER = JWT.require(ALGORITHM).build();
     private static final long EXPIRATION_TIME = 3600000; // 1 ora
 
-    public static String generateToken(int id_account) {
+    public static String generateToken(int id_account, String role) {
         String subjectToken = String.valueOf(id_account);
         return JWT.create()
                 .withSubject(subjectToken)
+                .withClaim("role", role)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(ALGORITHM);
     }
@@ -25,5 +26,10 @@ public class JwtUtil {
     public static String validateToken(String token) throws JWTVerificationException {
         DecodedJWT jwt = VERIFIER.verify(token);
         return jwt.getSubject();
+    }
+
+    public static String getRoleFromToken(String token) {
+        DecodedJWT jwt = VERIFIER.verify(token);
+        return jwt.getClaim("role").asString();
     }
 }

@@ -25,7 +25,7 @@ public class LessonService {
         return lessonDao.getPrevLessons(id_course, flag);
     }
 
-    public List<Lesson> getNextLessons(int id_course) {
-        return lessonDao.getNextLessons(id_course);
+    public List<Lesson> get5LessonsBySubject(int id_course, boolean flag) {
+        return lessonDao.get5LessonsBySubject(id_course, flag);
     }
 }

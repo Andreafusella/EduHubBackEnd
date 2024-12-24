@@ -1,6 +1,5 @@
 package com.andrea.controller;
 
-import com.andrea.dto.NewCourseDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
 import com.andrea.service.LessonService;
@@ -18,6 +17,7 @@ public class LessonController {
         app.delete("/lesson", this::deleteLesson);
         app.get("/lesson-by-courseId", this::getLessonsByCourseId);
         app.get("/prev-lesson", this::getPrevLessons);
+        app.get("/prev-lesson-by-subjectId", this::get5LessonsBySubject);
 
     }
 
@@ -140,4 +140,40 @@ public class LessonController {
             ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
         }
     }
+
+    public void get5LessonsBySubject(Context ctx) {
+        System.out.println("Get Lessons Next/Last By Subject");
+
+        String idSubjectParam = ctx.queryParam("id_subject");
+        String flagParam = ctx.queryParam("next");
+
+        if (idSubjectParam == null || idSubjectParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_subject' parameter.");
+            return;
+        }
+
+        if (!flagParam.equalsIgnoreCase("true") && !flagParam.equalsIgnoreCase("false")) {
+            ctx.status(400).json("Invalid 'next' parameter. It must be 'true' or 'false'.");
+            return;
+        }
+
+
+        try {
+            Integer id_subject = Integer.parseInt(idSubjectParam.trim());
+            boolean flag = Boolean.parseBoolean(flagParam.trim());
+
+            List<Lesson> lessons = lessonService.get5LessonsBySubject(id_subject, flag);
+
+            if (lessons == null || lessons.isEmpty()) {
+                ctx.status(404).json("No recent lessons found for subject id: " + id_subject);
+            } else {
+                ctx.status(200).json(lessons);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_subject' parameter. It must be an integer.");
+        }
+    }
+
+
 }
