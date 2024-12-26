@@ -131,7 +131,7 @@ public class LessonController {
             List<Lesson> lessons = lessonService.getLastLessons(id_course, flag);
 
             if (lessons == null || lessons.isEmpty()) {
-                ctx.status(404).json("No recent lessons found for course id: " + id_course);
+                ctx.status(204).json("No recent lessons found for course id: " + id_course);
             } else {
                 ctx.status(200).json(lessons);
             }
@@ -165,7 +165,7 @@ public class LessonController {
             List<Lesson> lessons = lessonService.get5LessonsBySubject(id_subject, flag);
 
             if (lessons == null || lessons.isEmpty()) {
-                ctx.status(404).json("No recent lessons found for subject id: " + id_subject);
+                ctx.status(204).json("No recent lessons found for subject id: " + id_subject);
             } else {
                 ctx.status(200).json(lessons);
             }

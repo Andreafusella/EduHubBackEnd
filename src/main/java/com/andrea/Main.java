@@ -21,6 +21,8 @@ public class Main {
         EnrolledController enrolledController = new EnrolledController();
         SubjectController subjectController = new SubjectController();
         LessonController lessonController = new LessonController();
+        QuestionController questionController = new QuestionController();
+        QuizController quizController = new QuizController();
 
         accountController.registerRoutes(app);
         authController.registerRoutes(app);
@@ -28,6 +30,8 @@ public class Main {
         enrolledController.registerRoutes(app);
         subjectController.registerRoutes(app);
         lessonController.registerRoutes(app);
+        questionController.registerRoutes(app);
+        quizController.registerRoutes(app);
 
         System.out.println("Server in running on port 8000");
     }
