@@ -60,6 +60,8 @@ public class EnrolledController {
                 ctx.status(400).json("Invalid input data: " + e.getMessage());
             }
 
+            System.out.println(removeEnrolled.getId_account());
+
             EnrolledDeleteValidator.validate(removeEnrolled);
 
             int rowsAffected = enrolledService.removeEnrolled(removeEnrolled);

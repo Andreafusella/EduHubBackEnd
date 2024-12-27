@@ -50,7 +50,7 @@ public class AccountController {
                 ctx.status(400).json("Invalid request");
             } else {
                 try {
-                    emailService.generateAndSendEmail(account.getEmail(), "Welcome to Our Service", "Your account is now ready for start!", "try");
+                    emailService.generateAndSendEmail(account.getEmail(), "Create Account");
                     ctx.status(201).json(newAccount);
                 } catch (Exception e) {
                     System.err.println("Failed to send email: " + e.getMessage());
@@ -81,7 +81,7 @@ public class AccountController {
 
             if (email != null) {
                 try {
-                    emailService.generateAndSendEmail(email, "Elimination Complete", "Your account was successfully deleted!", "try");
+                    emailService.generateAndSendEmail(email, "Delete Account");
                     ctx.status(201).json("Account delete");
                 } catch (Exception e) {
                     System.err.println("Failed to send email: " + e.getMessage());

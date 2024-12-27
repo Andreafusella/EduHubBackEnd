@@ -17,7 +17,7 @@ public class SubjectDao {
         String addSubject = "INSERT INTO subject (name, id_course, id_teacher) VALUES (?, ?, ?)";
         String checkTeacherRole = "SELECT role FROM account WHERE id_account = ?";
 
-        //TODO controllo se l'id teacher corrisponde ad un teacher
+
         try {
             PreparedStatement checkTeacher = connection.prepareStatement(checkTeacherRole);
             checkTeacher.setInt(1, subject.getId_teacher());

@@ -24,6 +24,7 @@ public class Main {
         QuestionController questionController = new QuestionController();
         QuizController quizController = new QuizController();
 
+
         accountController.registerRoutes(app);
         authController.registerRoutes(app);
         courseController.registerRoutes(app);
