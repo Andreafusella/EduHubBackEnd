@@ -1,9 +1,9 @@
 package com.andrea.controller;
 
 import com.andrea.dto.NewAccountDto;
+import com.andrea.dto.PresenceDto;
 import com.andrea.exception.EmailExistException;
 import com.andrea.exception.ValidationException;
-import com.andrea.model.Account;
 import com.andrea.model.AccountWithEmail;
 import com.andrea.service.AccountService;
 import com.andrea.utility.email.EmailService;
@@ -12,7 +12,6 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import java.util.List;
-import java.util.Map;
 
 public class AccountController {
     private AccountService accountService = new AccountService();
@@ -27,6 +26,7 @@ public class AccountController {
         app.get("/get-account-by-course", this::getAllStudentByCourse);
         app.get("/get-studentNotInCourse-by-course", this::getAllStudentsNotInCourse);
         app.get("/get-student-by-email", this::getStudentByEmail);
+        app.get("/get-student-by-presence", this::getStudentByPresence);
     }
 
 
@@ -189,7 +189,7 @@ public class AccountController {
             return;
         }
 
-        System.out.println("Received id_course parameter: " + idCourseParam);
+
         try {
             Integer id_course = Integer.parseInt(idCourseParam.trim());
 
@@ -215,8 +215,6 @@ public class AccountController {
             return;
         }
 
-        System.out.println("Received email parameter: " + emailParam);
-
         try {
             AccountWithEmail student = accountService.getStudentByEmail(emailParam);
 
@@ -227,6 +225,31 @@ public class AccountController {
             }
         } catch (Exception e) {
             ctx.status(500).json("Error while fetching student: " + e.getMessage());
+        }
+    }
+
+    public void getStudentByPresence(Context ctx) {
+        System.out.println("Get student by Presence");
+
+        String lessonParam = ctx.queryParam("id_lesson");
+
+        if (lessonParam == null || lessonParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_lesson' parameter.");
+            return;
+        }
+
+        try {
+            Integer id_lesson = Integer.parseInt(lessonParam.trim());
+
+            List<PresenceDto> listAccount = accountService.getStudentByPresence(id_lesson);
+
+            if (listAccount == null || listAccount.isEmpty()) {
+                ctx.status(204).json("No Account found for id_lesson id: " + id_lesson);
+            } else {
+                ctx.status(200).json(listAccount);
+            }
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_lesson' parameter. It must be an integer.");
         }
     }
 

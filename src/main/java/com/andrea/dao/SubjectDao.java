@@ -2,6 +2,7 @@ package com.andrea.dao;
 
 import com.andrea.dto.AllSubjectDto;
 import com.andrea.exception.NotTeacherException;
+import com.andrea.model.Lesson;
 import com.andrea.model.Subject;
 import com.andrea.utility.database.DatabaseConnection;
 
@@ -55,6 +56,55 @@ public class SubjectDao {
         }
     }
 
+    public List<AllSubjectDto> getAllSubjectByIdTeacher(int id_teacher) {
+        List<AllSubjectDto> subjects = new ArrayList<>();
+        String getSubject = "SELECT * FROM subject WHERE id_teacher = ? ORDER BY name ASC";
+        String getNameTeacher = "SELECT name FROM account WHERE id_account = ?";
+        String getNameCourse = "SELECT name FROM course WHERE id_course = ?";
+
+        try {
+            // Prepara la query e imposta il valore del parametro id_teacher
+            PreparedStatement stm1 = connection.prepareStatement(getSubject);
+            stm1.setInt(1, id_teacher); // Qui imposti il valore del parametro
+            ResultSet rs = stm1.executeQuery();
+
+            while (rs.next()) {
+                Integer idSubject = rs.getInt("id_subject");
+                String name = rs.getString("name");
+                Integer id_course = rs.getInt("id_course");
+
+                // Ottieni il nome del docente
+                String nameTeacherReturn = "";
+                try (PreparedStatement nameTeacherStmt = connection.prepareStatement(getNameTeacher)) {
+                    nameTeacherStmt.setInt(1, id_teacher);
+                    try (ResultSet rsNameTeacher = nameTeacherStmt.executeQuery()) {
+                        if (rsNameTeacher.next()) {
+                            nameTeacherReturn = rsNameTeacher.getString("name");
+                        }
+                    }
+                }
+
+                // Ottieni il nome del corso
+                String nameCourseReturn = "";
+                try (PreparedStatement nameCourseStmt = connection.prepareStatement(getNameCourse)) {
+                    nameCourseStmt.setInt(1, id_course);
+                    try (ResultSet rsNameCourse = nameCourseStmt.executeQuery()) {
+                        if (rsNameCourse.next()) {
+                            nameCourseReturn = rsNameCourse.getString("name");
+                        }
+                    }
+                }
+
+                // Crea l'oggetto Subject con tutti i dati
+                AllSubjectDto subject = new AllSubjectDto(idSubject, name, id_course, nameCourseReturn, id_teacher, nameTeacherReturn);
+                subjects.add(subject);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return subjects;
+    }
+
     public List<AllSubjectDto> getAllSubjects() {
         List<AllSubjectDto> subjects = new ArrayList<>();
         String getSubject = "SELECT * FROM subject ORDER BY name ASC";
@@ -103,6 +153,27 @@ public class SubjectDao {
         }
 
         return subjects;
+    }
+
+    public Subject getSubjectById (int id_subject) {
+        String findSubject = "SELECT * FROM subject WHERE id_subject = ?";
+
+        try {
+            PreparedStatement stm = connection.prepareStatement(findSubject);
+
+            stm.setInt(1, id_subject);
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                Subject subject = new Subject(rs.getInt("id_subject"), rs.getString("name"), rs.getInt("id_course"), rs.getInt("id_teacher"));
+                return subject;
+            } else {
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean deleteSubject(int id_subject) {

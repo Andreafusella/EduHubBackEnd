@@ -28,4 +28,8 @@ public class LessonService {
     public List<Lesson> get5LessonsBySubject(int id_course, boolean flag) {
         return lessonDao.get5LessonsBySubject(id_course, flag);
     }
+
+    public List<Lesson> getLessonsBySubjectId(int id_subject) {
+        return lessonDao.getLessonsBySubjectId(id_subject);
+    }
 }

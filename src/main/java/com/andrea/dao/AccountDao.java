@@ -1,7 +1,9 @@
 package com.andrea.dao;
 
 import com.andrea.dto.NewAccountDto;
+import com.andrea.dto.PresenceDto;
 import com.andrea.exception.EmailExistException;
+import com.andrea.model.Account;
 import com.andrea.model.AccountWithEmail;
 import com.andrea.utility.database.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
@@ -400,6 +402,46 @@ public class AccountDao {
 
         } catch (SQLException e) {
             throw new RuntimeException("Error while fetching student by email", e);
+        }
+    }
+
+    public List<PresenceDto> getStudentByPresence(int id_lesson) {
+        List<PresenceDto> listAccount = new ArrayList<>();
+        String findStudent = """
+                SELECT a.id_account, a.name, a.last_name, a.role, c.email, s.avatar, p.presence
+                FROM account a
+                JOIN presence p ON a.id_account = p.id_account
+                JOIN settingaccount s ON a.id_account = s.id_account
+                JOIN credential c ON a.id_account = c.id_account
+                WHERE p.id_lesson = ? AND a.role = 'Student';
+                 """;
+
+        try {
+            PreparedStatement stm = connection.prepareStatement(findStudent);
+            stm.setInt(1, id_lesson);
+
+            ResultSet rs = stm.executeQuery();
+
+            while (rs.next()) {
+                PresenceDto account = new PresenceDto();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLastName(rs.getString("last_name"));
+                account.setRole(rs.getString("role"));
+                account.setEmail(rs.getString("email"));
+                account.setAvatar(rs.getInt("avatar"));
+                account.setPresence(rs.getBoolean("presence"));
+
+                listAccount.add(account);
+            }
+
+            if (listAccount.isEmpty()) {
+                return null;
+            } else {
+                return listAccount;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

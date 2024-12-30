@@ -1,5 +1,6 @@
 package com.andrea.controller;
 
+import com.andrea.auth.middleware.JwtAuthMiddleware;
 import com.andrea.dto.NewCourseDto;
 import com.andrea.model.Course;
 import com.andrea.service.CourseSerivce;
@@ -10,11 +11,15 @@ import io.javalin.http.Context;
 import java.util.List;
 
 public class CourseController {
+    private JwtAuthMiddleware jwtAuthMiddleware = new JwtAuthMiddleware();
     private CourseSerivce courseSerivce = new CourseSerivce();
     private EmailService emailService = new EmailService();
 
     public void registerRoutes(Javalin app) {
+
+        app.before("/add-course", jwtAuthMiddleware);
         app.post("/add-course", this::addCourse);
+        app.before("/courses", jwtAuthMiddleware);
         app.get("/courses", this::getAllCourse);
         app.get("/course-by-id", this::getCourseById);
     }

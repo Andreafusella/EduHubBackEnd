@@ -18,6 +18,7 @@ public class LessonController {
         app.get("/lesson-by-courseId", this::getLessonsByCourseId);
         app.get("/prev-lesson", this::getPrevLessons);
         app.get("/prev-lesson-by-subjectId", this::get5LessonsBySubject);
+        app.get("/lesson-by-subjectId", this::getLessonsBySubjectId);
 
     }
 
@@ -104,6 +105,32 @@ public class LessonController {
 
         } catch (NumberFormatException e) {
             ctx.status(400).json("Invalid 'id_course' parameter. It must be an integer.");
+        }
+    }
+
+    public void getLessonsBySubjectId(Context ctx) {
+        System.out.println("Get Lesson By Subject Id");
+
+        String idSubjectParam = ctx.queryParam("id_subject");
+
+        if (idSubjectParam == null || idSubjectParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_subject' parameter.");
+            return;
+        }
+
+        try {
+            Integer id_subject = Integer.parseInt(idSubjectParam.trim());
+
+            List<Lesson> lessons = lessonService.getLessonsBySubjectId(id_subject);
+
+            if (lessons == null || lessons.isEmpty()) {
+                ctx.status(204).json("No Lessons found for subject id: " + id_subject);
+            } else {
+                ctx.status(200).json(lessons);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_subject' parameter. It must be an integer.");
         }
     }
 

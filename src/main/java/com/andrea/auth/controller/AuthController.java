@@ -16,6 +16,7 @@ public class AuthController {
 
     public void registerRoutes(Javalin app) {
         app.post("/login", this::login);
+        app.get("/id-user", this::getAccountId);
     }
 
     public void login(Context ctx) {
@@ -41,7 +42,7 @@ public class AuthController {
                 String role = (String) listReturn.get(2);
                 int id_account = (int) listReturn.get(0);
                 String token = JwtUtil.generateToken(id_account, role);
-                Map<String, Object> response = Map.of("token", new TokenResponse(token), "role", listReturn.get(2));
+                Map<String, Object> response = Map.of("token", new TokenResponse(token), "role", listReturn);
                 ctx.status(201).json(response);
             } else {
                 ctx.status(401).json(Map.of("message", "Invalid credentials"));
@@ -50,6 +51,17 @@ public class AuthController {
             ctx.status(400).json(e.getMessage());
         }
     }
+
+    public void getAccountId(Context ctx) {
+
+        String idAccount = ctx.attribute("id_account");
+        if (idAccount == null) {
+            ctx.status(401).json(Map.of("message", "Unauthorized"));
+            return;
+        }
+        ctx.status(200).json(Map.of("id_account", idAccount));
+    }
+
 
     private static class TokenResponse {
         public final String token;

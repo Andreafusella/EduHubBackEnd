@@ -2,6 +2,7 @@ package com.andrea.service;
 
 import com.andrea.dao.AccountDao;
 import com.andrea.dto.NewAccountDto;
+import com.andrea.dto.PresenceDto;
 import com.andrea.exception.EmailExistException;
 import com.andrea.model.Account;
 import com.andrea.model.AccountWithEmail;
@@ -41,5 +42,9 @@ public class AccountService {
 
     public AccountWithEmail getStudentByEmail(String email) {
         return accountDao.getStudentByEmail(email);
+    }
+
+    public List<PresenceDto> getStudentByPresence(int id_lesson) {
+        return accountDao.getStudentByPresence(id_lesson);
     }
 }

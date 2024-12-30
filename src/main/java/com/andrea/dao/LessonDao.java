@@ -16,6 +16,8 @@ public class LessonDao {
     public Lesson addLesson(Lesson lessons) throws NotSubjectException {
         String addLesson = "INSERT INTO lesson (id_course, id_subject, lesson_date, hour_start, hour_end, classroom, title, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String checkSubjectQuery = "SELECT 1 FROM subject WHERE id_subject = ?";
+        String getAllAccountCourse = "SELECT id_account FROM Enrolled WHERE id_course = ?";
+        String addPresence = "INSERT INTO presence (id_account, id_lesson) VALUES (?, ?)";
 
         try {
             PreparedStatement checkSubject = connection.prepareStatement(checkSubjectQuery);
@@ -40,20 +42,33 @@ public class LessonDao {
             newLesson.setString(8, lessons.getDescription());
 
             int affectedRows = newLesson.executeUpdate();
-            int generatedId = 0;
+            int generatedLessonId = 0;
 
             if (affectedRows > 0) {
                 try (ResultSet generatedKeys = newLesson.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        generatedId = generatedKeys.getInt(1);
+                        generatedLessonId = generatedKeys.getInt(1);
                     }
                 }
             } else {
                 throw new SQLException("Lesson creation failed, no rows added");
             }
 
+            //Recuperare gli account iscritti al corso
+            PreparedStatement getAccounts = connection.prepareStatement(getAllAccountCourse);
+            getAccounts.setInt(1, lessons.getId_course());
+            ResultSet accountResults = getAccounts.executeQuery();
 
-            return new Lesson(generatedId, lessons.getId_course(), lessons.getId_subject(), lessons.getTitle(), lessons.getDescription(), lessons.getLesson_date(), lessons.getHour_start(), lessons.getHour_end(), lessons.getClassroom());
+            PreparedStatement insertPresence = connection.prepareStatement(addPresence);
+            while (accountResults.next()) {
+                int idAccount = accountResults.getInt("id_account");
+                insertPresence.setInt(1, idAccount);
+                insertPresence.setInt(2, generatedLessonId);
+                insertPresence.addBatch();
+            }
+            insertPresence.executeBatch();
+
+            return new Lesson(generatedLessonId, lessons.getId_course(), lessons.getId_subject(), lessons.getTitle(), lessons.getDescription(), lessons.getLesson_date(), lessons.getHour_start(), lessons.getHour_end(), lessons.getClassroom());
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -169,6 +184,36 @@ public class LessonDao {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error while retrieving lessons for course with id " + courseId, e);
+        }
+
+        return lessons;
+    }
+
+    public List<Lesson> getLessonsBySubjectId(int subjectId) {
+        String getLessonsQuery = "SELECT * FROM lesson WHERE id_subject = ? ORDER BY lesson_date ASC;";
+
+        List<Lesson> lessons = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getLessonsQuery)) {
+            preparedStatement.setInt(1, subjectId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Lesson lesson = new Lesson();
+                lesson.setId_lesson(resultSet.getInt("id_lesson"));
+                lesson.setId_course(resultSet.getInt("id_course"));
+                lesson.setLesson_date(resultSet.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(resultSet.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(resultSet.getTime("hour_end").toLocalTime());
+                lesson.setClassroom(resultSet.getString("classroom"));
+                lesson.setTitle(resultSet.getString("title"));
+                lesson.setDescription(resultSet.getString("description"));
+                lesson.setId_subject(resultSet.getInt("id_subject"));
+
+                lessons.add(lesson);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while retrieving lessons for subject with id " + subjectId, e);
         }
 
         return lessons;

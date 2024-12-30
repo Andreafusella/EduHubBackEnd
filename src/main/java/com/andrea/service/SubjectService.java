@@ -21,4 +21,12 @@ public class SubjectService {
     public boolean deleteSubject(int id_subject) {
         return subjectDao.deleteSubject(id_subject);
     }
+
+    public List<AllSubjectDto> getAllSubjectByIdTeacher(int id_teacher) {
+        return subjectDao.getAllSubjectByIdTeacher(id_teacher);
+    }
+
+    public Subject getSubjectById(int id_subject) {
+        return subjectDao.getSubjectById(id_subject);
+    }
 }
