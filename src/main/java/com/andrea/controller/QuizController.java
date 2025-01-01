@@ -124,7 +124,7 @@ public class QuizController {
             if (delete) {
                 ctx.status(201).json("Quiz delete");
             } else if (!delete) {
-                ctx.status(404).json("No quiz record found to delete.");
+                ctx.status(204).json("No quiz record found to delete.");
             } else {
                 ctx.status(500).json("Unexpected error occurred while deleting quiz.");
             }

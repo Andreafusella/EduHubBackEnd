@@ -1,5 +1,6 @@
 package com.andrea.controller;
 
+import com.andrea.dto.LessonListPresenceStudentDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
 import com.andrea.service.LessonService;
@@ -19,6 +20,7 @@ public class LessonController {
         app.get("/prev-lesson", this::getPrevLessons);
         app.get("/prev-lesson-by-subjectId", this::get5LessonsBySubject);
         app.get("/lesson-by-subjectId", this::getLessonsBySubjectId);
+        app.get("/lesson-by-account", this::get5LastLessonByAccount);
 
     }
 
@@ -202,5 +204,31 @@ public class LessonController {
         }
     }
 
+    public void get5LastLessonByAccount(Context ctx) {
+        System.out.println("Get Lessons Last By Account");
+
+        String idAccountParam = ctx.queryParam("id_account");
+
+        if (idAccountParam == null || idAccountParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid 'id_account' parameter.");
+            return;
+        }
+
+        try {
+            Integer id_account = Integer.parseInt(idAccountParam.trim());
+
+
+            List<LessonListPresenceStudentDto> lessons = lessonService.get5LastLessonByAccount(id_account);
+
+            if (lessons == null || lessons.isEmpty()) {
+                ctx.status(204).json("No lessons found for id_account id: " + id_account);
+            } else {
+                ctx.status(200).json(lessons);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_account' parameter. It must be an integer.");
+        }
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.andrea.dao;
 
+import com.andrea.dto.LessonListPresenceStudentDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
 import com.andrea.utility.database.DatabaseConnection;
@@ -306,6 +307,53 @@ public class LessonDao {
         return lessons;
     }
 
+    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account) {
+        String query = """
+                SELECT
+                    L.id_lesson,
+                    L.title,
+                    L.lesson_date,
+                    L.hour_start,
+                    L.hour_end,
+                    P.presence
+                FROM
+                    Lesson L
+                INNER JOIN
+                    Enrolled E ON L.id_course = E.id_course
+                LEFT JOIN
+                    Presence P ON L.id_lesson = P.id_lesson AND P.id_account = ?
+                WHERE
+                    E.id_account = ?
+                    AND L.lesson_date <= CURRENT_DATE
+                ORDER BY
+                    L.lesson_date ASC
+                LIMIT 5;
+                """;
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id_account);
+            stm.setInt(2, id_account);
 
+            ResultSet rs = stm.executeQuery();
+
+            List<LessonListPresenceStudentDto> list = new ArrayList<>();
+            while (rs.next()) {
+                LessonListPresenceStudentDto lesson = new LessonListPresenceStudentDto();
+                lesson.setId_lesson(rs.getInt("id_lesson"));
+                lesson.setTitle(rs.getString("title"));
+                lesson.setLesson_date(rs.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(rs.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(rs.getTime("hour_end").toLocalTime());
+                lesson.setPresence(rs.getBoolean("presence"));
+
+                list.add(lesson);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 }

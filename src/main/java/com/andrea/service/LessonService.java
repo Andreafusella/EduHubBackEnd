@@ -1,6 +1,7 @@
 package com.andrea.service;
 
 import com.andrea.dao.LessonDao;
+import com.andrea.dto.LessonListPresenceStudentDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
 
@@ -31,5 +32,9 @@ public class LessonService {
 
     public List<Lesson> getLessonsBySubjectId(int id_subject) {
         return lessonDao.getLessonsBySubjectId(id_subject);
+    }
+
+    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account) {
+        return lessonDao.get5LastLessonByAccount(id_account);
     }
 }
