@@ -16,25 +16,25 @@ public class PresenceController {
 
     }
 
-    public void addPresence(Context ctx) {
-        try {
-
-            List<Presence> presenceList = objectMapper.readValue(ctx.body(), objectMapper.getTypeFactory().constructCollectionType(List.class, Presence.class));
-
-            for (Presence presence : presenceList) {
-                boolean flag = presenceService.addPresence(presence);
-                if (!flag) {
-                    ctx.status(401).json("Error add presence");
-                    return;
-                }
-            }
-            ctx.status(200).json("Presence added");
-        } catch (Exception e) {
-
-            ctx.status(400).json("Invalid JSON format");
-            e.printStackTrace();
-        }
-    }
+//    public void addPresence(Context ctx) {
+//        try {
+//
+//            List<Presence> presenceList = objectMapper.readValue(ctx.body(), objectMapper.getTypeFactory().constructCollectionType(List.class, Presence.class));
+//
+//            for (Presence presence : presenceList) {
+//                boolean flag = presenceService.addPresence(presence);
+//                if (!flag) {
+//                    ctx.status(401).json("Error add presence");
+//                    return;
+//                }
+//            }
+//            ctx.status(200).json("Presence added");
+//        } catch (Exception e) {
+//
+//            ctx.status(400).json("Invalid JSON format");
+//            e.printStackTrace();
+//        }
+//    }
 
     public void updatePresence(Context ctx) {
         try {

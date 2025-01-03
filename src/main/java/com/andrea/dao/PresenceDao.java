@@ -11,20 +11,20 @@ public class PresenceDao {
 
     private Connection connection = DatabaseConnection.getInstance().getConnection();
 
-    public boolean addPresence(Presence presence) {
+    public void addPresence(int id_account, int id_lesson, boolean presence) {
         String addPresence = "INSERT INTO presence (id_account, id_lesson, presence) VALUES (?, ?, ?)";
 
         try {
             PreparedStatement stm = connection.prepareStatement(addPresence);
-            stm.setInt(1, presence.getId_account());
-            stm.setInt(2, presence.getId_lesson());
-            stm.setBoolean(3, presence.getPresence());
+            stm.setInt(1, id_account);
+            stm.setInt(2, id_lesson);
+            stm.setBoolean(3, presence);
 
             stm.executeUpdate();
 
-            return true;
+
         } catch (SQLException e) {
-            return false;
+
         }
     }
 

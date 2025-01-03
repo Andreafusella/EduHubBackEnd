@@ -208,17 +208,18 @@ public class LessonController {
         System.out.println("Get Lessons Last By Account");
 
         String idAccountParam = ctx.queryParam("id_account");
+        String limitParam = ctx.queryParam("limit");
 
-        if (idAccountParam == null || idAccountParam.isEmpty()) {
-            ctx.status(400).json("Missing or invalid 'id_account' parameter.");
+        if (idAccountParam == null || idAccountParam.isEmpty() || limitParam == null || limitParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid parameter.");
             return;
         }
 
         try {
             Integer id_account = Integer.parseInt(idAccountParam.trim());
+            boolean limit = Boolean.parseBoolean(limitParam.trim());
 
-
-            List<LessonListPresenceStudentDto> lessons = lessonService.get5LastLessonByAccount(id_account);
+            List<LessonListPresenceStudentDto> lessons = lessonService.get5LastLessonByAccount(id_account, limit);
 
             if (lessons == null || lessons.isEmpty()) {
                 ctx.status(204).json("No lessons found for id_account id: " + id_account);

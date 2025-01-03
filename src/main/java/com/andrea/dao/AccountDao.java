@@ -21,6 +21,7 @@ public class AccountDao {
         String emailExist = "SELECT COUNT(*) FROM credential WHERE email = ?";
         String addCredential = "INSERT INTO credential (id_account, email, password) VALUES (?, ?, ?)";
         String addAvatar = "INSERT INTO settingaccount (id_account, avatar) VALUES (?, ?)";
+        String addPresence = "";
 
         try {
 

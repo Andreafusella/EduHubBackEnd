@@ -307,28 +307,53 @@ public class LessonDao {
         return lessons;
     }
 
-    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account) {
-        String query = """
-                SELECT
-                    L.id_lesson,
-                    L.title,
-                    L.lesson_date,
-                    L.hour_start,
-                    L.hour_end,
-                    P.presence
-                FROM
-                    Lesson L
-                INNER JOIN
-                    Enrolled E ON L.id_course = E.id_course
-                LEFT JOIN
-                    Presence P ON L.id_lesson = P.id_lesson AND P.id_account = ?
-                WHERE
-                    E.id_account = ?
-                    AND L.lesson_date <= CURRENT_DATE
-                ORDER BY
-                    L.lesson_date ASC
-                LIMIT 5;
-                """;
+    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account, boolean limit) {
+        String query = "";
+        if (limit) {
+            query = """
+                    SELECT
+                        L.id_lesson,
+                        L.title,
+                        L.lesson_date,
+                        L.hour_start,
+                        L.hour_end,
+                        P.presence
+                    FROM
+                        Lesson L
+                    INNER JOIN
+                        Enrolled E ON L.id_course = E.id_course
+                    LEFT JOIN
+                        Presence P ON L.id_lesson = P.id_lesson AND P.id_account = ?
+                    WHERE
+                        E.id_account = ?
+                        AND L.lesson_date <= CURRENT_DATE
+                    ORDER BY
+                        L.lesson_date ASC
+                    LIMIT 5;
+                    """;
+        } else {
+            query = """
+                    SELECT
+                        L.id_lesson,
+                        L.title,
+                        L.lesson_date,
+                        L.hour_start,
+                        L.hour_end,
+                        P.presence
+                    FROM
+                        Lesson L
+                    INNER JOIN
+                        Enrolled E ON L.id_course = E.id_course
+                    LEFT JOIN
+                        Presence P ON L.id_lesson = P.id_lesson AND P.id_account = ?
+                    WHERE
+                        E.id_account = ?
+                        AND L.lesson_date <= CURRENT_DATE
+                    ORDER BY
+                        L.lesson_date DESC
+                    
+                    """;
+        }
         try {
             PreparedStatement stm = connection.prepareStatement(query);
             stm.setInt(1, id_account);

@@ -7,6 +7,7 @@ import com.andrea.exception.EnrolledExistException;
 import com.andrea.exception.EnrolledNotExistException;
 import com.andrea.model.Course;
 import com.andrea.model.Enrolled;
+import com.andrea.model.Presence;
 import com.andrea.utility.database.DatabaseConnection;
 
 import java.sql.Connection;
@@ -20,12 +21,31 @@ import java.util.List;
 public class EnrolledDao {
 
     private Connection connection = DatabaseConnection.getInstance().getConnection();
+    private PresenceDao presenceDao = new PresenceDao();
 
     public Enrolled addEnrolled(Enrolled enrolled) throws EnrolledExistException, AccountNotFoundException, CourseNotFoundException {
         String addEnrolled = "INSERT INTO enrolled (id_account, id_course, enrollment_date) VALUES (?, ?, ?)";
         String checkEnrolledExist = "SELECT COUNT(*) FROM enrolled WHERE id_account = ? AND id_course = ?";
         String checkAccountExist = "SELECT COUNT(*) FROM Account WHERE id_account = ?";
         String checkCourseExist = "SELECT COUNT(*) FROM Course WHERE id_course = ?";
+        String getLessonEnrolled = """
+                SELECT
+                    l.id_lesson,
+                    l.title,
+                    l.description,
+                    l.lesson_date,
+                    l.hour_start,
+                    l.hour_end,
+                    c.name AS course_name
+                FROM
+                    Enrolled e
+                JOIN
+                    Course c ON e.id_course = c.id_course
+                JOIN
+                    Lesson l ON l.id_course = c.id_course
+                WHERE
+                    e.id_account = ?;
+                """;
 
         try {
 
@@ -68,6 +88,23 @@ public class EnrolledDao {
             //TODO: aggiungere invio email allo studente
             if (affectedRows < 0) {
                 throw new SQLException("Course creation failed, no rows added");
+            }
+
+            //create present
+            PreparedStatement getListLesson = connection.prepareStatement(getLessonEnrolled);
+            getListLesson.setInt(1, enrolled.getId_account());
+
+            ResultSet rs1 = getListLesson.executeQuery();
+            List<Integer> listId_lesson = new ArrayList<>();
+            while(rs1.next()) {
+                int id = rs1.getInt("id_lesson");
+                listId_lesson.add(id);
+            }
+
+            if (listId_lesson != null || !listId_lesson.isEmpty()) {
+                for (int id : listId_lesson) {
+                    presenceDao.addPresence(enrolled.getId_account(), id, false);
+                }
             }
 
             return enrolled;

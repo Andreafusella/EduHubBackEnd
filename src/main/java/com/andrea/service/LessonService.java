@@ -34,7 +34,7 @@ public class LessonService {
         return lessonDao.getLessonsBySubjectId(id_subject);
     }
 
-    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account) {
-        return lessonDao.get5LastLessonByAccount(id_account);
+    public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account, boolean limit) {
+        return lessonDao.get5LastLessonByAccount(id_account, limit);
     }
 }
