@@ -15,6 +15,7 @@ public class QuizController {
         app.get("/quiz-by-subject", this::getAllQuizzesByIdSubject);
         app.delete("/quiz", this::deleteQuiz);
         app.get("/quiz-by-id", this::getQuizById);
+        app.get("/quiz-by-account", this::getQuizByAccount);
     }
 
     public void addQuiz(Context ctx) {
@@ -130,6 +131,33 @@ public class QuizController {
             }
         } catch (Exception e) {
             ctx.status(500).json("Unexpected error occurred while deleting quiz.");
+        }
+    }
+
+    public void getQuizByAccount(Context ctx) {
+        System.out.println("Get quiz By Account");
+
+        String idAccountParam = ctx.queryParam("id_account");
+
+        if (idAccountParam == null || idAccountParam.isEmpty()) {
+            ctx.status(400).json("Missing 'id_account' parameter.");
+            return;
+        }
+
+        int id_account = 0;
+        try {
+            id_account = Integer.parseInt(idAccountParam);
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_account' parameter: it must be an integer.");
+            return;
+        }
+
+        List<Quiz> list = quizService.getQuizByAccount(id_account);
+
+        if (list.isEmpty() || list == null) {
+            ctx.status(204);
+        } else {
+            ctx.status(201).json(list);
         }
     }
 }

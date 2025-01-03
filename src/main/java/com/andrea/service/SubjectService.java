@@ -29,4 +29,8 @@ public class SubjectService {
     public Subject getSubjectById(int id_subject) {
         return subjectDao.getSubjectById(id_subject);
     }
+
+    public List<AllSubjectDto> getSubjectByCourse(int id_course) {
+        return subjectDao.getSubjectByCourse(id_course);
+    }
 }

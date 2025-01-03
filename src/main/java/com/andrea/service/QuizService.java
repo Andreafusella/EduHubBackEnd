@@ -27,4 +27,8 @@ public class QuizService {
     public boolean deleteQuiz(int id_quiz) {
         return quizDao.deleteQuiz(id_quiz);
     }
+
+    public List<Quiz> getQuizByAccount(int id_account) {
+        return quizDao.getQuizByAccount(id_account);
+    }
 }

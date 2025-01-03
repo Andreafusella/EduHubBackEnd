@@ -126,4 +126,35 @@ public class QuizDao {
             throw new RuntimeException("Error while deleting quiz: " + e.getMessage(), e);
         }
     }
+
+    public List<Quiz> getQuizByAccount(int id_account) {
+        String query = """
+                SELECT q.id_quiz, q.title, q.description, q.date, q.id_subject
+                FROM quiz q
+                JOIN subject s ON q.id_subject = s.id_subject
+                JOIN course c ON s.id_course = c.id_course
+                JOIN enrolled e ON c.id_course = e.id_course
+                WHERE e.id_account = ?;
+                """;
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id_account);
+
+            ResultSet rs = stm.executeQuery();
+            List<Quiz> list = new ArrayList<>();
+            while (rs.next()) {
+                Quiz quiz = new Quiz();
+                quiz.setId_quiz(rs.getInt("id_quiz"));
+                quiz.setTitle(rs.getString("title"));
+                quiz.setDescription(rs.getString("description"));
+                quiz.setQuiz_date(rs.getObject("date", LocalDate.class));
+                quiz.setId_subject(rs.getInt("id_subject"));
+
+                list.add(quiz);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -193,4 +193,38 @@ public class SubjectDao {
             throw new RuntimeException("Error deleting subject", e);
         }
     }
+
+    public List<AllSubjectDto> getSubjectByCourse(int id_course) {
+        String query = """
+            SELECT
+                S.id_subject,
+                S.name,
+                S.id_teacher
+            FROM
+                Subject S
+            WHERE
+                S.id_course = ?;
+            """;
+
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id_course);
+
+            ResultSet rs = stm.executeQuery();
+
+            List<AllSubjectDto> list = new ArrayList<>();
+            while (rs.next()) {
+                AllSubjectDto subject = new AllSubjectDto();
+                subject.setId_subject(rs.getInt("id_subject"));
+                subject.setName(rs.getString("name"));
+                subject.setId_teacher(rs.getInt("id_teacher"));
+
+                list.add(subject);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

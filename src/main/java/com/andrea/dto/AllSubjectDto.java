@@ -18,12 +18,10 @@ public class AllSubjectDto {
     @NonNull
     private Integer id_course;
 
-    @NonNull
     private String name_course;
 
     @NonNull
     private Integer id_teacher;
 
-    @NonNull
     private String name_teacher;
 }

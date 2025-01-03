@@ -18,6 +18,7 @@ public class SubjectController {
         app.delete("/subject", this::deleteSubject);
         app.get("/subject-by-teacher", this::getAllSubjectByIdTeacher);
         app.get("/subject", this::getSubjectById);
+        app.get("/subject-by-course", this::getSubjectByCourse);
     }
 
     public void addSubject(Context ctx) {
@@ -150,6 +151,37 @@ public class SubjectController {
             ctx.status(400).json("Invalid subject ID");
         } catch (Exception e) {
             ctx.status(500).json("Error deleting subject: " + e.getMessage());
+        }
+    }
+
+    public void getSubjectByCourse(Context ctx) {
+        try {
+            System.out.println("Get Subjects By Id Course");
+
+            String idCourseParam = ctx.queryParam("id_course");
+
+            if (idCourseParam == null || idCourseParam.isEmpty()) {
+                ctx.status(400).json("Missing 'id_course' parameter.");
+                return;
+            }
+
+            int id_course = 0;
+            try {
+                id_course = Integer.parseInt(idCourseParam);
+            } catch (NumberFormatException e) {
+                ctx.status(400).json("Invalid 'id_course' parameter: it must be an integer.");
+                return;
+            }
+
+            List<AllSubjectDto> subjects = subjectService.getSubjectByCourse(id_course);
+
+            if (subjects.isEmpty()) {
+                ctx.status(404).json("No subjects found");
+            } else {
+                ctx.status(200).json(subjects);
+            }
+        } catch (Exception e) {
+            ctx.status(500).json("Error fetching subjects: " + e.getMessage());
         }
     }
 

@@ -24,6 +24,7 @@ public class Main {
         QuestionController questionController = new QuestionController();
         QuizController quizController = new QuizController();
         PresenceController presenceController = new PresenceController();
+        ScoreController scoreController = new ScoreController();
 
 
         accountController.registerRoutes(app);
@@ -35,6 +36,7 @@ public class Main {
         questionController.registerRoutes(app);
         quizController.registerRoutes(app);
         presenceController.registerRoutes(app);
+        scoreController.registerRoutes(app);
 
         System.out.println("Server in running on port 8000");
     }
