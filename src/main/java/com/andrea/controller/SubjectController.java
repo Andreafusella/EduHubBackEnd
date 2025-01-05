@@ -57,7 +57,7 @@ public class SubjectController {
             List<AllSubjectDto> subjects = subjectService.getAllSubjects();
 
             if (subjects.isEmpty()) {
-                ctx.status(404).json("No subjects found");
+                ctx.status(204).json("No subjects found");
             } else {
                 ctx.status(200).json(subjects);
             }
