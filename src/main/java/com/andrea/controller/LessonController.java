@@ -1,5 +1,6 @@
 package com.andrea.controller;
 
+import com.andrea.auth.middleware.JwtAuthMiddleware;
 import com.andrea.dto.LessonListPresenceStudentDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
@@ -7,20 +8,28 @@ import com.andrea.service.LessonService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class LessonController {
 
     private LessonService lessonService = new LessonService();
+    private JwtAuthMiddleware jwtAuthMiddleware = new JwtAuthMiddleware();
 
     public void registerRoutes(Javalin app) {
+
         app.post("/lesson", this::addLesson);
         app.delete("/lesson", this::deleteLesson);
+
+
         app.get("/lesson-by-courseId", this::getLessonsByCourseId);
+
         app.get("/prev-lesson", this::getPrevLessons);
         app.get("/prev-lesson-by-subjectId", this::get5LessonsBySubject);
         app.get("/lesson-by-subjectId", this::getLessonsBySubjectId);
         app.get("/lesson-by-account", this::get5LastLessonByAccount);
+        app.get("/lesson-by-account-by-date", this::getLessonByAccountByDate);
+        app.get("/lesson-by-subject-by-date", this::getLessonBySubjectByDate);
 
     }
 
@@ -229,6 +238,62 @@ public class LessonController {
 
         } catch (NumberFormatException e) {
             ctx.status(400).json("Invalid 'id_account' parameter. It must be an integer.");
+        }
+    }
+
+    public void getLessonByAccountByDate(Context ctx) {
+        System.out.println("Lesson By Account By Date");
+
+        String idAccountParam = ctx.queryParam("id_account");
+        String dateParam = ctx.queryParam("date");
+
+        if (idAccountParam == null || idAccountParam.isEmpty() || dateParam == null || dateParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid parameter.");
+
+        }
+
+        try {
+            Integer id_account = Integer.parseInt(idAccountParam.trim());
+            LocalDate date = LocalDate.parse(dateParam);
+
+            List<LessonListPresenceStudentDto> list = lessonService.getLessonByAccountByDate(id_account, date);
+
+            if (list == null || list.isEmpty()) {
+                ctx.status(204);
+            } else {
+                ctx.status(201).json(list);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid parameter");
+        }
+    }
+
+    public void getLessonBySubjectByDate(Context ctx) {
+        System.out.println("Lesson By Subject By Date");
+
+        String idSubjectParam = ctx.queryParam("id_subject");
+        String dateParam = ctx.queryParam("date");
+
+        if (idSubjectParam == null || idSubjectParam.isEmpty() || dateParam == null || dateParam.isEmpty()) {
+            ctx.status(400).json("Missing or invalid parameter.");
+
+        }
+
+        try {
+            Integer id_subject = Integer.parseInt(idSubjectParam.trim());
+            LocalDate date = LocalDate.parse(dateParam);
+
+            List<LessonListPresenceStudentDto> list = lessonService.getLessonBySubjectByDate(id_subject, date);
+
+            if (list == null || list.isEmpty()) {
+                ctx.status(204);
+            } else {
+                ctx.status(201).json(list);
+            }
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid parameter");
         }
     }
 

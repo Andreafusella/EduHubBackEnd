@@ -17,9 +17,9 @@ public class CourseController {
 
     public void registerRoutes(Javalin app) {
 
-        app.before("/add-course", jwtAuthMiddleware);
         app.post("/add-course", this::addCourse);
-        app.before("/courses", jwtAuthMiddleware);
+
+        app.before("/courses", jwtAuthMiddleware::handle);
         app.get("/courses", this::getAllCourse);
         app.get("/course-by-id", this::getCourseById);
     }

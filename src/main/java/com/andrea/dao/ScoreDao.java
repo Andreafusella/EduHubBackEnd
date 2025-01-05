@@ -1,5 +1,6 @@
 package com.andrea.dao;
 
+import com.andrea.dto.AccountScoreDto;
 import com.andrea.model.Score;
 import com.andrea.utility.database.DatabaseConnection;
 
@@ -61,6 +62,62 @@ public class ScoreDao {
                 score.setDate(rs.getObject("date", LocalDate.class));
 
                 list.add(score);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<AccountScoreDto> getScore5Account(int id_course) {
+        String query = """
+                SELECT
+                    a.id_account,
+                    a.name,
+                    a.last_name,
+                    cr.email,
+                    st.avatar,
+                    AVG(s.score) AS average_score
+                FROM
+                    Score s
+                JOIN
+                    Account a ON s.id_account = a.id_account
+                JOIN
+                    Settingaccount st ON a.id_account = st.id_account
+                JOIN
+                    Credential cr ON a.id_account = cr.id_account
+                JOIN
+                    Quiz q ON s.id_quiz = q.id_quiz
+                JOIN
+                    Subject sub ON q.id_subject = sub.id_subject
+                JOIN
+                    Course c ON sub.id_course = c.id_course
+                WHERE
+                    c.id_course = ?
+                GROUP BY
+                    a.id_account, a.name, a.last_name, cr.email, st.avatar
+                ORDER BY
+                    average_score DESC
+                LIMIT 5;
+                
+                """;
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id_course);
+
+            ResultSet rs = stm.executeQuery();
+            List<AccountScoreDto> list = new ArrayList<>();
+            while (rs.next()) {
+                AccountScoreDto account = new AccountScoreDto();
+                account.setId_account(rs.getInt("id_account"));
+                account.setName(rs.getString("name"));
+                account.setLast_name(rs.getString("last_name"));
+                account.setEmail(rs.getString("email"));
+                account.setScore(rs.getDouble("average_score"));
+                account.setAvatar(rs.getInt("avatar"));
+
+                list.add(account);
             }
 
             return list;

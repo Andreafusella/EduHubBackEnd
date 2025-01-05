@@ -381,4 +381,120 @@ public class LessonDao {
 
     }
 
+    public List<LessonListPresenceStudentDto> getLessonByAccountByDate(int id_account, LocalDate date) {
+        String queryListLesson = """
+                SELECT
+                    L.id_lesson,
+                    L.title,
+                    L.description,
+                    L.lesson_date,
+                    L.hour_start,
+                    L.hour_end,
+                    L.classroom,
+                    L.id_subject,
+                    P.presence
+                FROM
+                    Lesson L
+                INNER JOIN
+                    Enrolled E ON L.id_course = E.id_course
+                LEFT JOIN
+                    Presence P ON L.id_lesson = P.id_lesson AND P.id_account = ?
+                WHERE
+                    E.id_account = ?
+                    AND L.lesson_date = ?
+                ORDER BY
+                    L.lesson_date DESC;
+                """;
+        String queryNameSubject = "SELECT name FROM subject WHERE id_subject = ?";
+
+        try {
+
+            List<LessonListPresenceStudentDto> list = new ArrayList<>();
+            PreparedStatement stmListLesson = connection.prepareStatement(queryListLesson);
+            stmListLesson.setInt(1, id_account);
+            stmListLesson.setInt(2, id_account);
+            stmListLesson.setObject(3, date);
+
+            ResultSet rs = stmListLesson.executeQuery();
+
+            while (rs.next()) {
+                LessonListPresenceStudentDto lesson = new LessonListPresenceStudentDto();
+                lesson.setId_lesson(rs.getInt("id_lesson"));
+                lesson.setTitle(rs.getString("title"));
+                lesson.setDescription(rs.getString("description"));
+                lesson.setLesson_date(rs.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(rs.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(rs.getTime("hour_end").toLocalTime());
+                lesson.setClassroom(rs.getString("classroom"));
+
+                PreparedStatement stmNameSub = connection.prepareStatement(queryNameSubject);
+                stmNameSub.setInt(1, rs.getInt("id_subject"));
+
+                ResultSet rs1 = stmNameSub.executeQuery();
+                if (rs1.next()) {
+                    lesson.setName_subject(rs1.getString("name"));
+                }
+
+                list.add(lesson);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<LessonListPresenceStudentDto> getLessonBySubjectByDate(int id_subject, LocalDate date) {
+        String queryListLesson = """
+                SELECT
+                	L.id_lesson,
+                	L.title,
+                	L.description,
+                	L.lesson_date,
+                	L.hour_start,
+                	L.hour_end,
+                	L.classroom,
+                	L.id_subject
+                FROM
+                	Lesson L
+                WHERE
+                	L.id_subject = ? 
+                	AND L.lesson_date = ?
+                """;
+        String queryNameSubject = "SELECT name FROM subject WHERE id_subject = ?";
+
+        try {
+            List<LessonListPresenceStudentDto> listLesson = new ArrayList<>();
+            PreparedStatement stmListLesson = connection.prepareStatement(queryListLesson);
+
+            stmListLesson.setInt(1, id_subject);
+            stmListLesson.setObject(2, date);
+            ResultSet rs = stmListLesson.executeQuery();
+
+            while (rs.next()) {
+                LessonListPresenceStudentDto lesson = new LessonListPresenceStudentDto();
+                lesson.setId_lesson(rs.getInt("id_lesson"));
+                lesson.setTitle(rs.getString("title"));
+                lesson.setLesson_date(rs.getObject("lesson_date", LocalDate.class));
+                lesson.setHour_start(rs.getTime("hour_start").toLocalTime());
+                lesson.setHour_end(rs.getTime("hour_end").toLocalTime());
+                lesson.setClassroom(rs.getString("classroom"));
+
+                PreparedStatement stmNameCourse = connection.prepareStatement(queryNameSubject);
+                stmNameCourse.setInt(1, id_subject);
+                ResultSet rs1 = stmNameCourse.executeQuery();
+
+                if (rs1.next()) {
+                    lesson.setName_subject(rs1.getString("name"));
+                }
+
+                listLesson.add(lesson);
+            }
+
+            return listLesson;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

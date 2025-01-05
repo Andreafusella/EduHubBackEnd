@@ -33,6 +33,11 @@ public class LessonListPresenceStudentDto {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime hour_end;
 
-    @NonNull
     private boolean presence;
+
+    private String name_subject;
+
+    private String description;
+
+    private String classroom;
 }

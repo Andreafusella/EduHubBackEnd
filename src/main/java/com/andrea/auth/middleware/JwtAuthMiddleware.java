@@ -7,11 +7,13 @@ import io.javalin.http.Handler;
 public class JwtAuthMiddleware implements Handler {
     @Override
     public void handle(Context ctx) throws Exception {
-        System.out.println("entra nel middleware");
+        System.out.println("Entra nel middleware");
+
         String authHeader = ctx.header("Authorization");
 
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("non trova il token");
+            System.out.println("Token non trovato o malformato");
             ctx.status(401).result("Missing or invalid token");
             return;
         }
@@ -21,9 +23,11 @@ public class JwtAuthMiddleware implements Handler {
             String id_account = JwtUtil.validateToken(token);
             ctx.attribute("id_account", id_account);
             System.out.println("Token valido per id_account: " + id_account);
+
         } catch (Exception e) {
             System.out.println("Token non valido o scaduto");
             ctx.status(401).result("Invalid or expired token");
+
         }
     }
 }

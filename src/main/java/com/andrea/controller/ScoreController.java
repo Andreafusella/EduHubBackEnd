@@ -1,5 +1,6 @@
 package com.andrea.controller;
 
+import com.andrea.dto.AccountScoreDto;
 import com.andrea.model.Score;
 import com.andrea.service.ScoreService;
 import io.javalin.Javalin;
@@ -13,6 +14,7 @@ public class ScoreController {
     public void registerRoutes(Javalin app) {
         app.get("/score", this::getScoreByAccountQuiz);
         app.post("/score", this::addScore);
+        app.get("/score-by-course", this::getScore5Account);
     }
 
     public void addScore(Context ctx) {
@@ -55,6 +57,34 @@ public class ScoreController {
             ctx.status(204);
         } else {
             ctx.status(201).json(score);
+        }
+    }
+
+    public void getScore5Account(Context ctx) {
+        System.out.println("Get Score 5 Account");
+
+        String idCourseParam = ctx.queryParam("id_course");
+
+        if (idCourseParam == null || idCourseParam.isEmpty()) {
+            ctx.status(400).json("Missing parameter.");
+            return;
+        }
+
+        int id_course = 0;
+
+        try {
+            id_course = Integer.parseInt(idCourseParam);
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid parameter: it must be an integer.");
+            return;
+        }
+
+        List<AccountScoreDto> list = scoreService.getScore5Account(id_course);
+
+        if (list == null || list.isEmpty()) {
+            ctx.status(204);
+        } else {
+            ctx.status(201).json(list);
         }
     }
 }

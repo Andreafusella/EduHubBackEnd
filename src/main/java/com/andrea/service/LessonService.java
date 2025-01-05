@@ -5,6 +5,7 @@ import com.andrea.dto.LessonListPresenceStudentDto;
 import com.andrea.exception.NotSubjectException;
 import com.andrea.model.Lesson;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class LessonService {
@@ -36,5 +37,13 @@ public class LessonService {
 
     public List<LessonListPresenceStudentDto> get5LastLessonByAccount(int id_account, boolean limit) {
         return lessonDao.get5LastLessonByAccount(id_account, limit);
+    }
+
+    public List<LessonListPresenceStudentDto> getLessonByAccountByDate(int id_account, LocalDate date) {
+        return lessonDao.getLessonByAccountByDate(id_account, date);
+    }
+
+    public List<LessonListPresenceStudentDto> getLessonBySubjectByDate(int id_subject, LocalDate date) {
+        return lessonDao.getLessonBySubjectByDate(id_subject, date);
     }
 }
