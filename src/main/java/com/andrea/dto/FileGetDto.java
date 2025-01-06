@@ -1,27 +1,22 @@
-package com.andrea.model;
+package com.andrea.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class File {
 
+public class FileGetDto {
     private Integer id_file;
+    private String file_path;
+    private String name;
+    private String description;
 
-    @NonNull
-    private String path;
-
-    @NonNull
-    private Integer id_subject;
-
-    @NonNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateUpload;
+    private LocalDate upload_date;
 }

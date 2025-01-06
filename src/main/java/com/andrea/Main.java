@@ -8,8 +8,9 @@ public class Main {
     public static void main(String[] args) {
 
         Javalin app = Javalin.create(config -> {
-            config.bundledPlugins.enableCors(cors -> {
-                cors.addRule(it -> {
+
+            config.plugins.enableCors(cors -> {
+                cors.add(it -> {
                     it.anyHost();
                 });
             });
@@ -25,6 +26,7 @@ public class Main {
         QuizController quizController = new QuizController();
         PresenceController presenceController = new PresenceController();
         ScoreController scoreController = new ScoreController();
+        FileController fileController = new FileController();
 
 
         accountController.registerRoutes(app);
@@ -37,6 +39,7 @@ public class Main {
         quizController.registerRoutes(app);
         presenceController.registerRoutes(app);
         scoreController.registerRoutes(app);
+        fileController.registerRoutes(app);
 
         System.out.println("Server in running on port 8000");
     }
