@@ -34,10 +34,6 @@ cd EduHubBackEnd
  String basePath = "/Users/andreafusella/Desktop/Desktop/Progetti/EduHubBackEnd/";
 ```
 
-# Run the project
-
-1. Run the project:
-
 ## Access at Backend
 - The application will be available at URL:
 ```bash
