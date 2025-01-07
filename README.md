@@ -5,7 +5,7 @@
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 
-The backend of the **EduHub** project serves as the core system for managing lessons, students, and associated data. It is developed with **Java using the Javalin framework**, leveraging **Maven** for dependency management and **PostgreSQL** as the database to ensure robust and efficient data storage. The backend provides RESTful APIs for seamless communication with the frontend and ensures secure, scalable, and efficient operations.
+The backend of the **EduHub** project serves as the core system for managing lessons, students, file and associated data. It is developed with **Java using the Javalin framework**, leveraging **Maven** for dependency management and **PostgreSQL** as the database to ensure robust and efficient data storage. The backend provides RESTful APIs for seamless communication with the frontend and ensures secure, scalable, and efficient operations.
 
 ## System Requirements
 - **Java Development Kit (JDK)**: Version **11** or higher.
@@ -27,17 +27,11 @@ cd EduHubBackEnd
 - Open the file **src/main/java/com/andrea/utility/database/DatabaseConnection.java**
 - Change the user and password of the database in the file **src/main/java/com/andrea/utility/database/DatabaseConnection.java**.
 
-4. Create Admin Account:
-- Open Postman and create a new POST request to the endpoint **http://localhost:8000/register** with the following body:
-```json
-{
-    "name": "Admin1",
-    "last_name": "Admin1",
-    "role": "Administrator",
-    "email": "admin@gmail.com",
-    "password": "Password123",
-    "avatar": 2
-}
+4. Configure folder file:
+- Open the file **src/main/java/com/andrea/controller/FileController.java**
+- Change the basePath with your path
+```bash
+ String basePath = "/Users/andreafusella/Desktop/Desktop/Progetti/EduHubBackEnd/";
 ```
 
 # Run the project
@@ -49,7 +43,18 @@ cd EduHubBackEnd
 ```bash
 http://localhost:8000
 ```
-
+Create Admin Account:
+- Open Postman or similar application and create a new POST request to the endpoint **http://localhost:8000/register** with the following body:
+```json
+{
+    "name": "Admin1",
+    "last_name": "Admin1",
+    "role": "Administrator",
+    "email": "admin@gmail.com",
+    "password": "Password123",
+    "avatar": 2
+}
+```
 # Principal Endpoints
 
 ## Account
@@ -66,6 +71,11 @@ http://localhost:8000
 
 ## Lesson
 - **DELETE** /lesson?id_lesson=3: Delete a lesson.
+
+## File
+- **POST** /upload Upload File
+- **GET** /downlaod/{path} Download file
+- **DELETE** /file/{id_file} Delete file
 
 
 # Project Structure
@@ -117,8 +127,10 @@ http://localhost:8000
 │           │   └── validator/
 │           │       └── ...java
 │           └── Main.java
+├── uploads/
+│   └── ...png/pdf/jpg...
 ├── pom.xml
-└── README.md
+└── readme.md
 ```
 
 ### Contact
