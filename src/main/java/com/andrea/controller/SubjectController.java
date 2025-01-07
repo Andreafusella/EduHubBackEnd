@@ -1,6 +1,7 @@
 package com.andrea.controller;
 
 import com.andrea.dto.AllSubjectDto;
+import com.andrea.dto.SubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Subject;
 import com.andrea.service.SubjectService;
@@ -19,6 +20,7 @@ public class SubjectController {
         app.get("/subject-by-teacher", this::getAllSubjectByIdTeacher);
         app.get("/subject", this::getSubjectById);
         app.get("/subject-by-course", this::getSubjectByCourse);
+        app.get("/subject-by-account", this::getSubjectByAccount);
     }
 
     public void addSubject(Context ctx) {
@@ -185,6 +187,30 @@ public class SubjectController {
         }
     }
 
+    public void getSubjectByAccount(Context ctx) {
+        System.out.println("Get Subject By account");
+        String idAccountParam = ctx.queryParam("id_account");
 
+        if (idAccountParam == null || idAccountParam.isEmpty()) {
+            ctx.status(400).json("Missing 'id_account' parameter.");
+            return;
+        }
+
+        int id_account = 0;
+        try {
+            id_account = Integer.parseInt(idAccountParam);
+        } catch (NumberFormatException e) {
+            ctx.status(400).json("Invalid 'id_account' parameter: it must be an integer.");
+            return;
+        }
+
+        List<SubjectDto> list = subjectService.getSubjectByAccount(id_account);
+
+        if (list == null || list.isEmpty()) {
+            ctx.status(204);
+        } else {
+            ctx.status(201).json(list);
+        }
+    }
 
 }

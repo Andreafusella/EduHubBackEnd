@@ -1,6 +1,7 @@
 package com.andrea.dao;
 
 import com.andrea.dto.AllSubjectDto;
+import com.andrea.dto.SubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Lesson;
 import com.andrea.model.Subject;
@@ -218,6 +219,40 @@ public class SubjectDao {
                 subject.setId_subject(rs.getInt("id_subject"));
                 subject.setName(rs.getString("name"));
                 subject.setId_teacher(rs.getInt("id_teacher"));
+
+                list.add(subject);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<SubjectDto> getSubjectByAccount(int id_account) {
+        List<SubjectDto> list = new ArrayList<>();
+        String query = """
+                SELECT
+                    s.id_subject,
+                    s.name AS subject_name
+                FROM
+                    Enrolled e
+                JOIN
+                    Course c ON e.id_course = c.id_course
+                JOIN
+                    Subject s ON s.id_course = c.id_course
+                WHERE
+                    e.id_account = ?;
+                """;
+        try {
+            PreparedStatement stm = connection.prepareStatement(query);
+            stm.setInt(1, id_account);
+
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                SubjectDto subject = new SubjectDto();
+                subject.setId_subject(rs.getInt("id_subject"));
+                subject.setSubject_name(rs.getString("subject_name"));
 
                 list.add(subject);
             }

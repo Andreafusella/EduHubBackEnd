@@ -103,3 +103,11 @@ CREATE TABLE Score (
     CONSTRAINT fk_account FOREIGN KEY (id_account) REFERENCES Account (id_account) ON DELETE CASCADE,
     CONSTRAINT fk_quiz FOREIGN KEY (id_quiz) REFERENCES Quiz (id_quiz) ON DELETE CASCADE
 );
+
+CREATE TABLE file (
+    id_file SERIAL PRIMARY KEY,
+    file_path VARCHAR(255) NOT NULL,
+    id_subject INT NOT NULL,
+    upload_date DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (id_subject) REFERENCES subject(id_subject) ON DELETE CASCADE ON UPDATE CASCADE
+);

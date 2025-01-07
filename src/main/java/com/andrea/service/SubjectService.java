@@ -2,6 +2,7 @@ package com.andrea.service;
 
 import com.andrea.dao.SubjectDao;
 import com.andrea.dto.AllSubjectDto;
+import com.andrea.dto.SubjectDto;
 import com.andrea.exception.NotTeacherException;
 import com.andrea.model.Subject;
 
@@ -32,5 +33,9 @@ public class SubjectService {
 
     public List<AllSubjectDto> getSubjectByCourse(int id_course) {
         return subjectDao.getSubjectByCourse(id_course);
+    }
+
+    public List<SubjectDto> getSubjectByAccount(int id_account) {
+        return subjectDao.getSubjectByAccount(id_account);
     }
 }

@@ -35,7 +35,7 @@ public class FileDao {
 
     public List<FileGetDto> getFilesBySubject(int idSubject) throws SQLException {
         List<FileGetDto> listFile = new ArrayList<>();
-        String sql = "SELECT id_file, file_path, upload_date, name, description FROM file WHERE id_subject = ?";
+        String sql = "SELECT id_file, file_path, upload_date, name, description FROM file WHERE id_subject = ? ORDER BY upload_date DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, idSubject);
